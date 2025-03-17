@@ -18,14 +18,14 @@ import toast from "react-hot-toast";
 // Firestore imports
 import { db } from "../firebase.config";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-
+import { useNavigate } from "react-router-dom";
 // Redux imports for user management
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUser, updateUser } from "../redux/userSlice";
 
 const Account = () => {
   const { user, logout } = useAuth();
-
+const navigate = useNavigate();
   // Redux: get userData and status from store
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.user.userData);
@@ -206,6 +206,7 @@ const Account = () => {
                 onClick={() => {
                   logout();
                   setShowLogoutModal(false);
+                  navigate("/"); // Redirect to home route after logout
                 }}
                 className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
               >

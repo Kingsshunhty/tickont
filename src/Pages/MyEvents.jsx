@@ -77,7 +77,7 @@ const MyEvents = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white text-white">
+    <div className="min-h-screen  bg-white text-white">
       {/* Header with flag */}
       <header className="px-4 py-6 flex items-center bg-customBlack justify-between relative">
         <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-2">

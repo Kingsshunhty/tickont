@@ -579,7 +579,7 @@ function TransferDetailModal({ isOpen, onClose, selectedSeats, ticket }) {
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              className="w-full border border-gray-400 rounded px-3 py-2 h-20 outline-none resize-none"
+              className="w-full border border-gray-400 rounded text-[16px] px-3 py-2 h-20 outline-none resize-none"
             />
           </div>
         </div>
