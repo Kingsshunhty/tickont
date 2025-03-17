@@ -1,0 +1,46 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@theme {
+  --color-customBlack: #121212;
+  --color-customGray: #949494;
+  --font-custom: 'Poppins', sans-serif;
+  --color-customBlue: #024ddf;
+}
+@import 'leaflet/dist/leaflet.css';
+
+@layer utilities {
+  .bg-customBlack {
+    background-color: var(--color-customBlack);
+  }
+  .text-customBlack {
+    color: var(--color-customBlack);
+  }
+  .hover:bg-customblack:hover {
+    background-color: var(--color-customBlack);
+  }
+  .hover:text-customblack:hover {
+    color: var(--color-customBlack);
+  }
+  .text-xxs {
+    font-size: 0.55rem; /* Adjust size as needed */
+    line-height: 0.85rem;
+  }
+}
+/*  */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+/* Hide scrollbar for Webkit browsers (Chrome, Safari, Edge) */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Optional: Hide scrollbar for Firefox */
+.scrollbar-hide {
+  scrollbar-width: none;
+}
