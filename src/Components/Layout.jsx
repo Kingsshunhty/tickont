@@ -1,13 +1,19 @@
+import { useLocation } from "react-router-dom";
 import BottomNav from "./BottomBar";
 
 const Layout = ({ children }) => {
+  const location = useLocation();
+
+  // Define routes where BottomNav should NOT appear
+  const hideBottomNavOn = ["/"];
+
   return (
     <div className="relative min-h-screen flex flex-col">
       {/* Main Content */}
-      <main className="flex-grow pb-16">{children}</main> {/* Prevents content from overlapping BottomNav */}
+      <main className="flex-grow pb-16">{children}</main>
 
-      {/* Persistent Bottom Navigation */}
-      <BottomNav />
+      {/* Show BottomNav unless the route is in `hideBottomNavOn` */}
+      {!hideBottomNavOn.includes(location.pathname) && <BottomNav />}
     </div>
   );
 };
