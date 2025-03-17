@@ -117,7 +117,7 @@ const Login = () => {
         </form>
 
         {/* Forgot Password & Signup */}
-        <div className="text-center mt-4">
+        {/* <div className="text-center mt-4">
           <a
             href="/forgot-password"
             className="text-blue-400 text-sm hover:underline"
@@ -130,7 +130,7 @@ const Login = () => {
               Sign Up
             </a>
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );
