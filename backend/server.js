@@ -115,7 +115,7 @@ app.post("/send-ticket", async (req, res) => {
       to: emailOrMobile, // dynamic from front end
 
       // Subject: firstName + " this is the email confirmation, You’re in!"
-      subject: `${firstName}, This is the email confirmation, You're in! Your ${artist} - ${tourCountry} Tour ticket confirmation 2025`,
+      subject: `${firstName},  You're in! Your ${artist} - ${tourCountry} Tour ticket confirmation 2025`,
 
       // 5) Insert dynamic data into the HTML
       html: `
