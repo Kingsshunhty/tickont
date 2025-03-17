@@ -28,7 +28,7 @@ const TicketModal = ({ isOpen, onClose, ticket }) => {
   const transferDetailModalRef = useRef(null);
 
   const quantityNumber = Number(ticket.quantity) || 1;
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
   // ~~~~~ MAIN TICKET MODAL ANIMATIONS ~~~~~
   const afterOpenMainModal = () => {
     gsap.fromTo(
@@ -177,22 +177,53 @@ const dispatch = useDispatch();
                   {/* Top Bar */}
                   <div className="bg-customBlue text-white text-xs p-2 flex justify-center rounded-t-md items-center">
                     <p className="uppercase text-base font-light">
-                      Verified Fan Onsale
+                    {ticket.ticketHeader || "GA"}
                     </p>
                   </div>
 
-                  {/* Middle Bar */}
-                  <div className="bg-blue-600 text-white px-6 text-base py-4 flex justify-between">
-                    <div className="flex flex-col">
-                      <span className="uppercase text-xs font-light">SEC</span>
-                      <span className="uppercase font-semibold">
-                        {ticket.section || "GA"}
+                  {/* Modified Middle Bar */}
+                  {ticket.row && ticket.seatNumber ? (
+                    <div className="bg-blue-600 text-white px-6 text-base py-4 flex justify-between items-center">
+                      <div className="flex flex-col">
+                        <span className="uppercase text-xs font-light">
+                          SEC
+                        </span>
+                        <span className="uppercase font-semibold">
+                          {ticket.section || "GA"}
+                        </span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="uppercase text-xs font-light">
+                          Row
+                        </span>
+                        <span className="uppercase font-semibold">
+                          {ticket.row}
+                        </span>
+                      </div>
+                      <div className="flex flex-col text-right">
+                        <span className="uppercase text-xs font-light">
+                          {ticket.admissionType || "General Admission"}
+                        </span>
+                        <span className="uppercase font-semibold">
+                          {ticket.seatNumber}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-blue-600 text-white px-6 text-base py-4 flex justify-between">
+                      <div className="flex flex-col">
+                        <span className="uppercase text-xs font-light">
+                          SEC
+                        </span>
+                        <span className="uppercase font-semibold">
+                          {ticket.section || "GA"}
+                        </span>
+                      </div>
+                      <span className="uppercase font-light">
+                        {ticket.admissionType || "General Admission"}
                       </span>
                     </div>
-                    <span className="uppercase font-light">
-                      {ticket.admissionType || "General Admission"}
-                    </span>
-                  </div>
+                  )}
 
                   {/* Ticket Image */}
                   <div className="relative h-52 w-full bg-gray-200">
@@ -255,8 +286,7 @@ const dispatch = useDispatch();
               </button>
             </div>
             <div className="mt-7">
-
-            <MapComponent/>
+              <MapComponent />
             </div>
           </div>
         </div>
@@ -339,7 +369,7 @@ function TransferSeatSelector({ quantityNumber, ticket, onDone }) {
       <div className="mt-4">
         <div className="flex items-center justify-between space-x-2">
           <p className="text-base text-black font-medium">
-            Sec {ticket.section || "GA"}, Row {"-"}
+            Sec {ticket.section || "GA"}, Row {ticket.row || "-"}
           </p>
           {/* Show number selected & total */}
           <div className="text-black flex items-center font-medium">
@@ -389,7 +419,6 @@ function TransferSeatSelector({ quantityNumber, ticket, onDone }) {
           <GoChevronRight className="ml-1" />
         </button>
       </div>
-    
     </>
   );
 }

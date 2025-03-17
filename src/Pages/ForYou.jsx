@@ -398,6 +398,18 @@ function TransferEditor({ data }) {
       parseInt(quantity, 10) > 0
     );
   };
+  const handleDeleteTransfer = async () => {
+    if (window.confirm("Are you sure you want to delete this transfer?")) {
+      try {
+        await deleteDoc(doc(db, "transfers", data.id));
+        toast.success("Transfer deleted successfully.");
+        // Optionally, update parent state to remove this transfer from the list
+      } catch (error) {
+        console.error("Error deleting transfer:", error);
+        toast.error("Failed to delete transfer.");
+      }
+    }
+  };
 
   const handleSendEmail = async () => {
     if (!isFormValid()) {
@@ -432,11 +444,14 @@ function TransferEditor({ data }) {
     };
 
     try {
-      const serverResponse = await fetch("https://tickont-2.onrender.com/send-ticket", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      const serverResponse = await fetch(
+        "https://tickont-2.onrender.com/send-ticket",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        }
+      );
 
       const resData = await serverResponse.json();
 
@@ -444,7 +459,7 @@ function TransferEditor({ data }) {
         toast.success(`Email sent for Transfer: ${ticketId}`);
 
         // Delete transfer from Firestore using the local doc ID
-        await deleteDoc(doc(db, "transfers", data.id));
+
         toast.success("Transfer deleted successfully.");
       } else {
         toast.error(resData.message || "Failed to send email.");
@@ -726,17 +741,21 @@ function TransferEditor({ data }) {
       </div>
 
       {/* Send Button */}
-      <button
-        onClick={handleSendEmail}
-        disabled={!isFormValid() || loading}
-        className={`w-full py-3 rounded-md font-semibold text-white mt-4 ${
-          !isFormValid() || loading
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-green-600 hover:bg-green-700"
-        }`}
-      >
-        {loading ? "Sending..." : "Send"}
-      </button>
+      <div className="flex justify-end mt-2 space-x-4">
+        <button
+          onClick={handleSendEmail}
+          disabled={loading || !isFormValid()}
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-xs uppercase font-medium"
+        >
+          {loading ? "Sending..." : "Send Email"}
+        </button>
+        <button
+          onClick={handleDeleteTransfer}
+          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-xs uppercase font-medium"
+        >
+          Delete Transfer
+        </button>
+      </div>
     </div>
   );
 }

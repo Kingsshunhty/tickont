@@ -111,17 +111,18 @@ app.post("/send-ticket", async (req, res) => {
 
     // 4) Prepare the email details
     const mailOptions = {
-        from: `"TicketMaster" <${process.env.EMAIL}>`, // 👈 Custom sender name
+      from: `"TicketMaster" <${process.env.EMAIL}>`, // 👈 Custom sender name
       to: emailOrMobile, // dynamic from front end
 
       // Subject: firstName + " this is the email confirmation, You’re in!"
       subject: `${firstName}, This is the email confirmation, You're in! Your ${artist} - ${tourCountry} Tour ticket confirmation 2025`,
 
-
       // 5) Insert dynamic data into the HTML
       html: `
 <div><br><div class="gmail_quote gmail_quote_container"><div><br><div class="gmail_quote"><div>
-  <img src="https://image.mailing.ticketmaster.com/lib/fea015737460007f75/m/26/81d94a4c-1171-4900-992c-8a049f9d7ffc.png" width="135" height="20" border="0" alt="Ticketmaster"><br>
+<div style="text-align: center;">
+     <img src="https://image.mailing.ticketmaster.com/lib/fea015737460007f75/m/26/81d94a4c-1171-4900-992c-8a049f9d7ffc.png" width="135" height="20" border="0" alt="Ticketmaster" style="display:block; margin:0 auto;><br>
+  </div>
   <div>
     <table cellpadding="0" cellspacing="0" border="0" width="467">
       <tbody>
@@ -354,7 +355,7 @@ app.post("/send-ticket", async (req, res) => {
                               <tbody>
                                 <tr>
                                   <td style="text-align:center">
-                                    <b>THIS EMAIL CAN BE USED FOR ENTRY</b>
+                                    <b>THIS EMAIL CANNOT BE USED FOR ENTRY</b>
                                   </td>
                                 </tr>
                               </tbody>
@@ -378,55 +379,55 @@ app.post("/send-ticket", async (req, res) => {
                               <tbody>
                                 <tr>
                                   <td colspan="2" style="padding-bottom:16px;font-size:18px;line-height:20px">
-                                    <i><b>Payment Summary</b></i>
+                                    <b>Payment Summary</b>
                                   </td>
                                 </tr>
 
                                 <tr>
                                   <td style="padding-bottom:16px">
-                                    <i>${qtyNum} Live Nation Presale Seats Ticket<br>
+                                    ${qtyNum} Live Nation Presale Seats Ticket<br>
                                       <font style="font-size:12px;color:rgb(100,100,100)">
                                         ${currency} ${pricePerTicketFmt} x${qtyNum}
                                       </font>
-                                    </i>
+                                    
                                   </td>
                                   <td style="padding-left:10px;text-align:right;vertical-align:top">
-                                    <i>${currency} ${pricePerTicketTotal}</i>
+                                    ${currency} ${pricePerTicketTotal}
                                   </td>
                                 </tr>
 
                                 <tr>
                                   <td style="padding-bottom:16px">
-                                    <i>Per Item Fees<br>
+                                    Per Item Fees<br>
                                       <font style="font-size:12px;color:rgb(100,100,100)">
                                         ${currency} ${itemFeeFmt} (Service Charge) x${qtyNum}
                                       </font>
-                                    </i>
+                                    
                                   </td>
                                   <td style="padding-left:10px;text-align:right;vertical-align:top">
-                                    <i>${currency} ${itemFeeTotal}</i>
+                                    ${currency} ${itemFeeTotal}
                                   </td>
                                 </tr>
 
                                 <tr>
                                   <td style="padding-bottom:16px">
-                                    <i>Order Processing Fees<br>
+                                    Order Processing Fees<br>
                                       <font style="font-size:12px;color:rgb(100,100,100)">
                                         Handling Fee (${currency} ${processingFeeFmt})
                                       </font>
-                                    </i>
+                                    
                                   </td>
                                   <td style="padding-left:10px;text-align:right;vertical-align:top">
-                                    <i>${currency} ${processingFeeFmt}</i>
+                                   ${currency} ${processingFeeFmt}
                                   </td>
                                 </tr>
 
                                 <tr>
                                   <td style="padding-bottom:16px;border-top:1px solid #BFBFBF;padding-top:16px;font-size:18px;line-height:22px;">
-                                    <i><b>Total</b></i>
+                                    <b>Total</b>
                                   </td>
                                   <td style="width:110px;padding-left:10px;text-align:right;vertical-align:top;border-top:1px solid #BFBFBF;padding-top:16px;font-size:18px;line-height:22px;">
-                                    <b><i>${currency} ${totalFmt}</i></b>
+                                    <b>${currency} ${totalFmt}</b>
                                   </td>
                                 </tr>
                               </tbody>

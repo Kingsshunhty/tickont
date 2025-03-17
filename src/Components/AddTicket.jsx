@@ -1,8 +1,17 @@
 import React, { useState } from "react";
 import { db } from "../firebase.config";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc } from "firebase/firestore";
 import { Toaster, toast } from "react-hot-toast";
-
+function generateTicketId() {
+  const twoDigits = Math.floor(Math.random() * 90 + 10).toString(); // 10-99
+  const fiveDigits = Math.floor(Math.random() * 100000)
+    .toString()
+    .padStart(5, "0"); // 00000-99999
+  const firstLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26)); // A-Z
+  const secondLetter = String.fromCharCode(97 + Math.floor(Math.random() * 26)); // a-z
+  const singleDigit = Math.floor(Math.random() * 10).toString();
+  return `${twoDigits}-${fiveDigits}${firstLetter}${secondLetter}${singleDigit}`;
+}
 // Helper function to format date and time into a string like "Mon, Jun 9, 6:45 PM"
 function formatDateTime(dateValue, timeValue) {
   // If either date or time is missing, return an empty string
@@ -37,7 +46,9 @@ const AddTicket = () => {
   const [error, setError] = useState("");
   const [admissionType, setAdmissionType] = useState("");
   const [section, setSection] = useState("");
-
+  const [ticketHeader, setTicketHeader] = useState("");
+  const [row, setRow] = useState(""); // New: Row input
+  const [seatNumber, setSeatNumber] = useState(""); // New: Seat Number input
   // Cloudinary config (use your own details)
   const cloudinaryUploadUrl =
     "https://api.cloudinary.com/v1_1/domlob3pr/image/upload";
@@ -72,6 +83,7 @@ const AddTicket = () => {
   const handleUpload = async () => {
     // Basic validations
     if (
+      !ticketHeader ||
       !ticketTitle ||
       !dateValue ||
       !timeValue ||
@@ -97,12 +109,16 @@ const AddTicket = () => {
 
       // 2) Format the date/time into a single string
       const formattedDateTime = formatDateTime(dateValue, timeValue);
-
-      await addDoc(collection(db, "tickets"), {
+      const customTicketId = generateTicketId();
+      await setDoc(doc(db, "tickets", customTicketId), {
+        ticketHeader,
         title: ticketTitle,
         dateTime: formattedDateTime,
         location,
         quantity: ticketQuantity,
+        row, // Save row to Firestore
+        seatNumber, // Save seat number to Firestore
+        
         coverImage: imageUrl,
         admissionType, // ✅ New field
         section, // ✅ New field
@@ -114,9 +130,13 @@ const AddTicket = () => {
       // Reset form fields
       setTicketTitle("");
       setDateValue("");
+      setTicketHeader("");
       setTimeValue("");
       setLocation("");
       setTicketQuantity("");
+      setRow("");
+      setSeatNumber("");
+      setAdmissionType("");
       setCoverImage(null);
       setPreviewUrl(null);
     } catch (err) {
@@ -155,6 +175,16 @@ const AddTicket = () => {
         {error && <p className="text-red-400 text-center mb-4">{error}</p>}
 
         {/* Ticket Title */}
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Ticket Header:</label>
+          <input
+            type="text"
+            value={ticketHeader}
+            onChange={(e) => setTicketHeader(e.target.value)}
+            placeholder="Enter ticket header"
+            className="border border-gray-300 rounded-md p-3 w-full text-gray-900 focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
         <div className="mb-4">
           <label className="block font-medium mb-1">Ticket Title:</label>
           <input
@@ -276,7 +306,28 @@ const AddTicket = () => {
     "
           />
         </div>
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Row:</label>
+          <input
+            type="text"
+            value={row}
+            onChange={(e) => setRow(e.target.value)}
+            placeholder="Enter row"
+            className="border border-gray-400 rounded-md p-3 w-full text-gray-900 focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
 
+        {/* New: Seat Number */}
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Seat Number:</label>
+          <input
+            type="text"
+            value={seatNumber}
+            onChange={(e) => setSeatNumber(e.target.value)}
+            placeholder="Enter seat number"
+            className="border border-gray-400 rounded-md p-3 w-full text-gray-900 focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
         {/* Section */}
         <div className="mb-4">
           <label className="block font-medium mb-1">Section:</label>
