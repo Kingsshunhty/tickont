@@ -42,7 +42,7 @@ const BottomNav = () => {
   ];
 
   return (
-    <div className="fixed z-40 bottom-0 left-0 w-full bg-white text-white py-2 border-t border-gray-200 flex justify-around">
+    <div className="fixed z-40 bottom-0 left-0 w-full bg-white text-white py-4 border-t border-gray-200 flex justify-around">
       {tabs.map((tab) => (
         <button
           key={tab.id}
