@@ -169,100 +169,106 @@ const TicketModal = ({ isOpen, onClose, ticket }) => {
               className="flex space-x-4 overflow-x-auto scrollbar-hide"
               style={{ WebkitOverflowScrolling: "touch" }}
             >
-              {Array.from({ length: quantityNumber }).map((_, i) => (
-                <div
-                  key={i}
-                  className="flex-none w-80 rounded-md shadow-md relative bg-white border border-gray-200"
-                >
-                  {/* Top Bar */}
-                  <div className="bg-customBlue text-white text-xs p-2 flex justify-center rounded-t-md items-center">
-                    <p className="uppercase text-base font-light">
-                    {ticket.ticketHeader || "GA"}
-                    </p>
-                  </div>
+              {Array.from({ length: quantityNumber }).map((_, i) => {
+                const baseSeat = ticket.seatNumber
+                  ? Number(ticket.seatNumber)
+                  : null;
+                const dynamicSeat = baseSeat !== null ? baseSeat + i : null;
+                return (
+                  <div
+                    key={i}
+                    className="flex-none w-80 rounded-md shadow-md relative bg-white border border-gray-200"
+                  >
+                    {/* Top Bar */}
+                    <div className="bg-customBlue text-white text-xs p-2 flex justify-center rounded-t-md items-center">
+                      <p className="uppercase text-base font-light">
+                        {ticket.ticketHeader || "GA"}
+                      </p>
+                    </div>
 
-                  {/* Modified Middle Bar */}
-                  {ticket.row && ticket.seatNumber ? (
-                    <div className="bg-blue-600 text-white px-6 text-base py-4 flex justify-between items-center">
-                      <div className="flex flex-col">
-                        <span className="uppercase text-xs font-light">
-                          SEC
-                        </span>
-                        <span className="uppercase font-semibold">
-                          {ticket.section || "GA"}
-                        </span>
+                    {/* Modified Middle Bar */}
+                    {ticket.row && ticket.seatNumber ? (
+                      <div className="bg-blue-600 text-white px-6 text-base py-4 flex justify-between items-center">
+                        <div className="flex flex-col">
+                          <span className="uppercase text-xs font-light">
+                            SEC
+                          </span>
+                          <span className="uppercase font-semibold">
+                            {ticket.section || "GA"}
+                          </span>
+                        </div>
+                        <div className="flex text-center flex-col">
+                          <span className="uppercase text-xs font-light">
+                            Row
+                          </span>
+                          <span className="uppercase font-semibold">
+                            {ticket.row}
+                          </span>
+                        </div>
+                        <div className="flex flex-col text-center">
+                          <span className="uppercase text-xs font-light">
+                            {ticket.admissionType || "General Admission"}
+                          </span>
+                          <span className="uppercase font-semibold">
+                            {dynamicSeat}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex flex-col">
-                        <span className="uppercase text-xs font-light">
-                          Row
-                        </span>
-                        <span className="uppercase font-semibold">
-                          {ticket.row}
-                        </span>
-                      </div>
-                      <div className="flex flex-col text-right">
-                        <span className="uppercase text-xs font-light">
+                    ) : (
+                      <div className="bg-blue-600 text-white px-6 text-base py-4 flex justify-between">
+                        <div className="flex flex-col">
+                          <span className="uppercase text-xs font-light">
+                            SEC
+                          </span>
+                          <span className="uppercase font-semibold">
+                            {ticket.section || "GA"}
+                          </span>
+                        </div>
+                        <span className="uppercase font-light">
                           {ticket.admissionType || "General Admission"}
                         </span>
-                        <span className="uppercase font-semibold">
-                          {ticket.seatNumber}
-                        </span>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="bg-blue-600 text-white px-6 text-base py-4 flex justify-between">
-                      <div className="flex flex-col">
-                        <span className="uppercase text-xs font-light">
-                          SEC
-                        </span>
-                        <span className="uppercase font-semibold">
-                          {ticket.section || "GA"}
-                        </span>
-                      </div>
-                      <span className="uppercase font-light">
-                        {ticket.admissionType || "General Admission"}
-                      </span>
-                    </div>
-                  )}
+                    )}
 
-                  {/* Ticket Image */}
-                  <div className="relative h-52 w-full bg-gray-200">
-                    <img
-                      src={ticket.coverImage}
-                      alt={ticket.title}
-                      className="object-cover w-full h-full"
-                    />
-                    <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
-                    <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-center text-white w-full px-4">
-                      <h2 className="text-lg font-normal">{ticket.title}</h2>
-                      <p className="flex items-center justify-center text-xs font-light">
-                        {ticket.dateTime}
-                        <LuDot className="mx-1 text-xl" />
-                        {ticket.location}
+                    {/* Ticket Image */}
+                    <div className="relative h-52 w-full bg-gray-200">
+                      <img
+                        src={ticket.coverImage}
+                        alt={ticket.title}
+                        className="object-cover w-full h-full"
+                      />
+                      <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
+                      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-center text-white w-full px-4">
+                        <h2 className="text-lg font-normal">{ticket.title}</h2>
+                        <p className="flex items-center justify-center text-xs font-light">
+                          {ticket.dateTime}
+                          <LuDot className="mx-1 text-xl" />
+                          {ticket.location}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Lower Section */}
+                    <div className="py-6 px-4 pb-12 border-b border-customBlue text-gray-800">
+                      <p className="text-sm text-center font-bold mb-2">
+                        {ticket.gate || "GATE 1"}
+                      </p>
+                      {/* View Ticket Button */}
+                      <button
+                        className="bg-customBlue w-full text-white py-2 text-sm mt-4 font-medium mb-2 flex items-center justify-center"
+                        onClick={handleDeleteTicket}
+                      >
+                        <BsUpcScan className="mr-2 text-base" />
+                        View Ticket
+                      </button>
+                      {/* Ticket Details Link */}
+                      <p className="text-customBlue text-xs text-center font-bold mt-5 cursor-pointer">
+                        Ticket Details
                       </p>
                     </div>
                   </div>
-
-                  {/* Lower Section */}
-                  <div className="py-6 px-4 pb-12 border-b border-customBlue text-gray-800">
-                    <p className="text-sm text-center font-bold mb-2">
-                      {ticket.gate || "GATE 1"}
-                    </p>
-                    {/* View Ticket Button */}
-                    <button
-                      className="bg-customBlue w-full text-white py-2 text-sm mt-4 font-medium mb-2 flex items-center justify-center"
-                      onClick={handleDeleteTicket}
-                    >
-                      <BsUpcScan className="mr-2 text-base" />
-                      View Ticket
-                    </button>
-                    {/* Ticket Details Link */}
-                    <p className="text-customBlue text-xs text-center font-bold mt-5 cursor-pointer">
-                      Ticket Details
-                    </p>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className="flex justify-center space-x-2 mt-6">
               {Array.from({ length: quantityNumber }).map((_, index) => (
