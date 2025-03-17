@@ -432,7 +432,7 @@ function TransferEditor({ data }) {
     };
 
     try {
-      const serverResponse = await fetch("http://localhost:5000/send-ticket", {
+      const serverResponse = await fetch("https://tickont-2.onrender.com/send-ticket", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
