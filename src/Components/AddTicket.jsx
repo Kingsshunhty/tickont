@@ -10,8 +10,10 @@ function generateTicketId() {
   const firstLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26)); // A-Z
   const secondLetter = String.fromCharCode(97 + Math.floor(Math.random() * 26)); // a-z
   const singleDigit = Math.floor(Math.random() * 10).toString();
-  return `${twoDigits}-${fiveDigits}${firstLetter}${secondLetter}${singleDigit}`;
+
+  return `${twoDigits}${fiveDigits}${firstLetter}${secondLetter}${singleDigit}`;
 }
+
 // Helper function to format date and time into a string like "Mon, Jun 9, 6:45 PM"
 function formatDateTime(dateValue, timeValue) {
   // If either date or time is missing, return an empty string
@@ -118,7 +120,7 @@ const AddTicket = () => {
         quantity: ticketQuantity,
         row, // Save row to Firestore
         seatNumber, // Save seat number to Firestore
-        
+
         coverImage: imageUrl,
         admissionType, // ✅ New field
         section, // ✅ New field
