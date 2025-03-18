@@ -167,6 +167,7 @@ const MyEvents = () => {
         isOpen={showModal}
         onClose={closeModal}
         ticket={selectedTicket}
+        // generateTicketPDF={generateTicketPDF} 
       />
       <Toaster position="top-right" reverseOrder={false} />
     </div>

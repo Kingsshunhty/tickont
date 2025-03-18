@@ -341,6 +341,7 @@ function TransferEditor({ data }) {
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [isEditingCoverImage, setIsEditingCoverImage] = useState(false);
   const [isEditingEventTime, setIsEditingEventTime] = useState(false);
+  const [ticketPdfUrl, setTicketPdfUrl] = useState(data.ticketPdfUrl || "");
 
   // seats might be array. We'll let user edit each seat.
   const [seats, setSeats] = useState(
@@ -440,18 +441,16 @@ function TransferEditor({ data }) {
       quantity,
       artist,
       tourCountry,
+      ticketPdfUrl, // Add the ticket PDF URL here
       total,
     };
 
     try {
-      const serverResponse = await fetch(
-        "https://tickont-2.onrender.com/send-ticket",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        }
-      );
+      const serverResponse = await fetch("http://localhost:5000/send-ticket", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
 
       const resData = await serverResponse.json();
 
@@ -561,6 +560,23 @@ function TransferEditor({ data }) {
               isEditingEmail ? "bg-white" : "bg-gray-200 cursor-pointer"
             }`}
           />
+        </div>
+        <div className="ticket-pdf bg-white py-4 px-6 rounded-lg mt-2">
+          <p className="text-sm text-gray-700">
+            Ticket PDF:{" "}
+            {data.ticketPdfUrl ? (
+              <a
+                href={data.ticketPdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline"
+              >
+                Download Ticket
+              </a>
+            ) : (
+              "Not available"
+            )}
+          </p>
         </div>
 
         {/* ✅ Event Cover Image - Click to Edit */}

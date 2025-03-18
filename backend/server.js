@@ -39,6 +39,7 @@ app.post("/send-ticket", async (req, res) => {
       processingFee,
       insuranceFee,
       ticketId,
+      ticketPdfUrl, // Add the ticket PDF URL here
       total,
     } = req.body;
 
@@ -295,15 +296,19 @@ app.post("/send-ticket", async (req, res) => {
                                       <tbody>
                                         <tr>
                                           <td style="padding:12px 16px 0px">
-                                            <table width="168" cellspacing="0" cellpadding="0" border="0" align="right">
-                                              <tbody>
-                                                <tr>
-                                                  <td style="padding:0px 30px;border-radius:2px;background-color:rgb(2,108,223);color:rgb(255,255,255)" height="37" align="center">
-                                                    <b>VIEW TICKETS</b>
-                                                  </td>
-                                                </tr>
-                                              </tbody>
-                                            </table>
+                                            <a href="${ticketPdfUrl}?fl_attachment=true&filename=ticket.pdf" target="_blank" style="text-decoration:none; display:inline-block;">
+                                              <table width="168" cellspacing="0" cellpadding="0" border="0" align="right">
+                                                <tbody>
+                                                  <tr>
+                                                    <td style="padding:0px 30px;border-radius:2px;background-color:rgb(2,108,223);color:rgb(255,255,255)" height="37" align="center">
+                                                      <b>VIEW TICKETS</b>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </a>
+
+
                                           </td>
                                         </tr>
                                       </tbody>

@@ -9,6 +9,10 @@ import { GoChevronRight } from "react-icons/go";
 import { useDispatch } from "react-redux";
 import { deleteTicket } from "../redux/ticketSlice";
 import MapComponent from "./Map";
+import QRCode from "qrcode";
+import html2canvas from "html2canvas-pro";
+
+import jsPDF from "jspdf";
 // 1) Firestore addDoc import
 import { db } from "../firebase.config";
 import { collection, addDoc } from "firebase/firestore";
@@ -21,6 +25,111 @@ const TicketModal = ({ isOpen, onClose, ticket }) => {
 
   // The selected seats from the seat selection step
   const [selectedSeats, setSelectedSeats] = useState([]);
+  const ticketRef = useRef(); // Reference to the ticket component
+
+  // Generate a PDF blob from the ticket element
+  const generateTicketPDF = async () => {
+    if (!ticketRef.current) return null;
+    try {
+      console.log("generateTicketPDF: Starting PDF generation...");
+
+      // Preserve original styles
+      const originalBg = ticketRef.current.style.backgroundColor;
+      const headerEl = ticketRef.current.querySelector(".bg-blue-700");
+      let originalHeaderRadius = "";
+      if (headerEl) {
+        originalHeaderRadius = headerEl.style.borderRadius;
+        headerEl.style.borderRadius = "0";
+        console.log(
+          "generateTicketPDF: Header border radius set to 0 for capture."
+        );
+      }
+
+      // Set a clean background for capture
+      ticketRef.current.style.backgroundColor = "#fff";
+      console.log("generateTicketPDF: Background set to white for capture.");
+
+      // Capture the ticket element with higher resolution
+      const canvas = await html2canvas(ticketRef.current, {
+        scale: 3,
+        useCORS: true,
+      });
+      console.log("generateTicketPDF: html2canvas capture complete.");
+
+      const imgData = canvas.toDataURL("image/png");
+      console.log("generateTicketPDF: Ticket image data URL generated.");
+
+      // Create a new PDF document
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      // Calculate dimensions to maintain aspect ratio
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+      const imgWidth = pageWidth;
+      const imgHeight = (canvasHeight * pageWidth) / canvasWidth;
+      const yPosition = (pageHeight - imgHeight) / 8;
+      console.log(
+        `generateTicketPDF: Calculated image dimensions: ${imgWidth} x ${imgHeight}, yPosition: ${yPosition}`
+      );
+
+      // Add the captured ticket image to the PDF
+      pdf.addImage(imgData, "PNG", 0, yPosition, imgWidth, imgHeight);
+      console.log("generateTicketPDF: Ticket image added to PDF.");
+
+      // --- Generate a QR Code with dummy data ---
+      const dummyTicketId = "TICKET-123456"; // Dummy data for QR code
+      console.log(
+        "generateTicketPDF: Generating QR Code with value:",
+        dummyTicketId
+      );
+
+      const qrDataUrl = await QRCode.toDataURL(dummyTicketId);
+      console.log(
+        "generateTicketPDF: QR Code generated, data URL length:",
+        qrDataUrl.length
+      );
+
+      if (!qrDataUrl.startsWith("data:image/png")) {
+        console.error(
+          "generateTicketPDF: Unexpected QR code data URL format",
+          qrDataUrl
+        );
+      }
+
+      // Define size and position for the QR code (in mm)
+      const qrWidth = 60; // width in mm
+      const qrHeight = 40; // height in mm
+      const qrX = (pageWidth - qrWidth) / 2; // Center horizontally
+      // Position the QR code toward the bottom of the ticket image; adjust offset as needed
+      const qrY = yPosition + imgHeight - 90;
+
+      // Add the QR code image to the PDF
+      pdf.addImage(qrDataUrl, "PNG", qrX, qrY, qrWidth, qrHeight);
+      console.log(
+        "generateTicketPDF: QR Code added to PDF at position:",
+        qrX,
+        qrY
+      );
+
+      // Generate PDF blob
+      const pdfBlob = pdf.output("blob");
+      console.log("generateTicketPDF: PDF generation complete, blob created.");
+
+      // Restore original styles
+      ticketRef.current.style.backgroundColor = originalBg;
+      if (headerEl) {
+        headerEl.style.borderRadius = originalHeaderRadius;
+      }
+      console.log("generateTicketPDF: Styles restored. Returning PDF blob.");
+
+      return pdfBlob;
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      return null;
+    }
+  };
 
   // Refs for animating the modals
   const mainModalRef = useRef(null);
@@ -176,11 +285,12 @@ const TicketModal = ({ isOpen, onClose, ticket }) => {
                 const dynamicSeat = baseSeat !== null ? baseSeat + i : null;
                 return (
                   <div
+                    ref={ticketRef}
                     key={i}
                     className="flex-none w-80 rounded-md shadow-md relative bg-white border border-gray-200"
                   >
                     {/* Top Bar */}
-                    <div className="bg-customBlue text-white text-xs p-2 flex justify-center rounded-t-md items-center">
+                    <div className="bg-blue-700 text-white text-xs p-2 flex justify-center rounded-t-md items-center">
                       <p className="uppercase text-base font-light">
                         {ticket.ticketHeader || "GA"}
                       </p>
@@ -233,10 +343,12 @@ const TicketModal = ({ isOpen, onClose, ticket }) => {
                     {/* Ticket Image */}
                     <div className="relative h-52 w-full bg-gray-200">
                       <img
+                        crossOrigin="anonymous"
                         src={ticket.coverImage}
                         alt={ticket.title}
                         className="object-cover w-full h-full"
                       />
+
                       <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
                       <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-center text-white w-full px-4">
                         <h2 className="text-lg font-normal">{ticket.title}</h2>
@@ -350,6 +462,7 @@ const TicketModal = ({ isOpen, onClose, ticket }) => {
         onClose={() => setIsTransferDetailOpen(false)}
         selectedSeats={selectedSeats}
         ticket={ticket}
+        generateTicketPDF={generateTicketPDF}
       />
     </>
   );
@@ -430,7 +543,13 @@ function TransferSeatSelector({ quantityNumber, ticket, onDone }) {
 }
 
 /* ~~~~~~~~~~~~~~ FINAL TRANSFER DETAIL MODAL ~~~~~~~~~~~~~~ */
-function TransferDetailModal({ isOpen, onClose, selectedSeats, ticket }) {
+function TransferDetailModal({
+  isOpen,
+  onClose,
+  selectedSeats,
+  ticket,
+  generateTicketPDF,
+}) {
   const transferDetailModalRef = useRef(null);
 
   // 2) Local states to capture user input
@@ -459,11 +578,51 @@ function TransferDetailModal({ isOpen, onClose, selectedSeats, ticket }) {
 
   // The number of seats the user selected
   const seatCount = selectedSeats.length;
+  // Function to upload the PDF blob to Cloudinary
+  const uploadPDFToCloudinary = async (pdfBlob) => {
+    // Convert blob to a File object
+    const pdfFile = new File([pdfBlob], "ticket.pdf", {
+      type: "application/pdf",
+    });
+
+    const formData = new FormData();
+    formData.append("file", pdfFile);
+    formData.append("upload_preset", "Ticket"); // Use your Cloudinary preset
+    formData.append("resource_type", "raw"); // Specify raw for non-image files
+
+    const cloudinaryUploadUrl =
+      "https://api.cloudinary.com/v1_1/domlob3pr/raw/upload";
+
+    try {
+      const response = await fetch(cloudinaryUploadUrl, {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      if (data.secure_url) {
+        // Append attachment flag and filename
+        return data.secure_url + "?fl_attachment=true&filename=ticket.pdf";
+      } else {
+        throw new Error("PDF upload failed");
+      }
+    } catch (err) {
+      console.error("Cloudinary PDF Upload Error:", err);
+      return null;
+    }
+  };
 
   // 3) Handle the final transfer => Save to Firestore
   const handleTransfer = async () => {
     try {
-      // Compose the data
+      // 1. Generate the PDF blob using the function passed from TicketModal
+      const pdfBlob = await generateTicketPDF();
+      let ticketPdfUrl = "";
+      if (pdfBlob) {
+        // 2. Upload the PDF to Cloudinary and get the URL
+        ticketPdfUrl = await uploadPDFToCloudinary(pdfBlob);
+      }
+
+      // 3. Compose the transfer data including the PDF URL
       const transferData = {
         firstName,
         lastName,
@@ -478,25 +637,24 @@ function TransferDetailModal({ isOpen, onClose, selectedSeats, ticket }) {
         eventCoverImage: ticket.coverImage,
         section: ticket.section || "GA",
         row: ticket.row || "-",
-        // You can add more if needed
         createdAt: new Date().toISOString(),
+        ticketPdfUrl, // New field: URL of the uploaded ticket PDF
       };
 
-      // Save to Firestore
+      // 4. Save the transfer data to Firestore
       await addDoc(collection(db, "transfers"), transferData);
 
-      // Then close the modal
       await beforeClose();
       onClose();
 
-      // Optional: Clear fields if you want
+      // Optionally, clear the form fields here
       setFirstName("");
       setLastName("");
       setEmailOrMobile("");
       setNote("");
     } catch (error) {
       console.error("Error transferring ticket:", error);
-      // You could show an error message if you wish
+      // You may also show an error notification here
     }
   };
 
