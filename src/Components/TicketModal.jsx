@@ -11,7 +11,7 @@ import { deleteTicket } from "../redux/ticketSlice";
 import MapComponent from "./Map";
 import QRCode from "qrcode";
 import html2canvas from "html2canvas-pro";
-
+import { ClipLoader } from "react-spinners";
 import jsPDF from "jspdf";
 // 1) Firestore addDoc import
 import { db } from "../firebase.config";
@@ -557,7 +557,7 @@ function TransferDetailModal({
   const [lastName, setLastName] = useState("");
   const [emailOrMobile, setEmailOrMobile] = useState("");
   const [note, setNote] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const afterOpen = () => {
     gsap.fromTo(
       transferDetailModalRef.current,
@@ -614,6 +614,7 @@ function TransferDetailModal({
   // 3) Handle the final transfer => Save to Firestore
   const handleTransfer = async () => {
     try {
+      setLoading(true);
       // 1. Generate the PDF blob using the function passed from TicketModal
       const pdfBlob = await generateTicketPDF();
       let ticketPdfUrl = "";
@@ -621,7 +622,6 @@ function TransferDetailModal({
         // 2. Upload the PDF to Cloudinary and get the URL
         ticketPdfUrl = await uploadPDFToCloudinary(pdfBlob);
       }
-
       // 3. Compose the transfer data including the PDF URL
       const transferData = {
         firstName,
@@ -629,7 +629,6 @@ function TransferDetailModal({
         emailOrMobile,
         note,
         seats: selectedSeats,
-        // Basic ticket info
         ticketId: ticket.id,
         eventTitle: ticket.title,
         eventDateTime: ticket.dateTime,
@@ -641,20 +640,13 @@ function TransferDetailModal({
         ticketPdfUrl, // New field: URL of the uploaded ticket PDF
       };
 
-      // 4. Save the transfer data to Firestore
       await addDoc(collection(db, "transfers"), transferData);
-
       await beforeClose();
       onClose();
-
-      // Optionally, clear the form fields here
-      setFirstName("");
-      setLastName("");
-      setEmailOrMobile("");
-      setNote("");
+      setLoading(false);
     } catch (error) {
       console.error("Error transferring ticket:", error);
-      // You may also show an error notification here
+      setLoading(false);
     }
   };
 
@@ -761,10 +753,14 @@ function TransferDetailModal({
         </button>
 
         <button
-          className="absolute right-2 bg-customBlue py-2 bottom-4 px-2 rounded-sm flex items-center text-xs uppercase text-white font-normal"
+          className="absolute right-2 bg-customBlue py-2 bottom-4 px-2 w-36 justify-center  rounded-sm flex items-center text-xs uppercase text-white font-normal"
           onClick={handleTransfer}
         >
-          Transfer {seatCount} Ticket(s)
+          {loading ? (
+            <ClipLoader size={15} color="#fff" />
+          ) : (
+            `Transfer ${seatCount} Ticket(s)`
+          )}
         </button>
       </div>
     </Modal>
