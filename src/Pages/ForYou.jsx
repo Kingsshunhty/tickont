@@ -446,11 +446,14 @@ function TransferEditor({ data }) {
     };
 
     try {
-      const serverResponse = await fetch("https://tickont-2.onrender.com/send-ticket", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      const serverResponse = await fetch(
+        "https://tickont-2.onrender.com/send-ticket",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        }
+      );
 
       const resData = await serverResponse.json();
 
@@ -681,20 +684,13 @@ function TransferEditor({ data }) {
         </div>
         <div>
           <label className="text-sm">Currency:</label>
-          <select
+          <input
+            type="text"
             className="w-full border border-gray-300 rounded px-2 py-1 text-black"
             value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
-          >
-            <option value="USD">USD</option>
-            <option value="DKK">DKK</option>
-            <option value="EUR">EUR</option>
-            <option value="GBP">GBP</option>
-            <option value="CAD">CAD</option>
-            <option value="AUD">AUD</option>
-            <option value="NGN">NGN</option>
-            <option value="JPY">JPY</option>
-          </select>
+            onChange={(e) => setCurrency(e.target.value.toUpperCase())} // Convert to uppercase
+            placeholder="Enter currency (e.g., USD, NGN, EUR)"
+          />
         </div>
       </div>
 
