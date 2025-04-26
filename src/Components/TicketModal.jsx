@@ -415,7 +415,7 @@ const TicketModal = ({ isOpen, onClose, ticket }) => {
             </div>
             <div className="mt-7">
               
-              {/* <MapComponent lat={ticket.lat} lng={ticket.lng} /> */}
+              <MapComponent lat={ticket.lat} lng={ticket.lng} />
             </div>
           </div>
         </div>
