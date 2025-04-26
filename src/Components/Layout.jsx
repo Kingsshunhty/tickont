@@ -5,12 +5,16 @@ const Layout = ({ children }) => {
   const location = useLocation();
 
   // Define routes where BottomNav should NOT appear
-  const hideBottomNavOn = ["/", "/splash", ];
+  const hideBottomNavOn = ["/", "/splash", "/ticketmaster" ];
+  const addPadding = !hideBottomNavOn.includes(location.pathname);
 
+  
   return (
     <div className="relative min-h-screen flex flex-col">
       {/* Main Content */}
-      <main className="flex-grow pb-16">{children}</main>
+      <main className={`flex-grow ${addPadding ? "pb-16" : ""}`}>
+        {children}
+      </main>
 
       {/* Show BottomNav unless the route is in `hideBottomNavOn` */}
       {!hideBottomNavOn.includes(location.pathname) && <BottomNav />}

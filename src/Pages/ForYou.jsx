@@ -329,7 +329,6 @@ function TransferEditor({ data }) {
   const [eventLocation, setEventLocation] = useState(data.eventLocation || "");
   const [note, setNote] = useState(data.note || "");
   const [row, setRow] = useState(data.row || "");
-  
   const [section, setSection] = useState(data.section || "");
   const [ticketId, setTicketId] = useState(data.ticketId || "");
   const [emailOrMobile, setEmailOrMobile] = useState(data.emailOrMobile || "");
@@ -343,6 +342,9 @@ function TransferEditor({ data }) {
   const [isEditingCoverImage, setIsEditingCoverImage] = useState(false);
   const [isEditingEventTime, setIsEditingEventTime] = useState(false);
   const [ticketPdfUrl, setTicketPdfUrl] = useState(data.ticketPdfUrl || "");
+  const [senderFullName, setSenderFullName] = useState(
+    data.senderFullName || ""
+  );
 
   // seats might be array. We'll let user edit each seat.
   const [seats, setSeats] = useState(
@@ -359,7 +361,7 @@ function TransferEditor({ data }) {
   const [artist, setArtist] = useState(data.artist || "");
   const [tourCountry, setTourCountry] = useState(data.tourCountry || "");
   const [loading, setLoading] = useState(false);
-
+  const [transferLoading, setTransferLoading] = useState(false);
   // Compute total => (price/ticket * quantity) + itemFee + processingFee
   const computeTotal = () => {
     const p = parseFloat(pricePerTicket) || 0;
@@ -473,6 +475,51 @@ function TransferEditor({ data }) {
     }
 
     setLoading(false);
+  };
+  const handleSendTransferToClient = async () => {
+    // Minimal validation
+    if (!firstName || !emailOrMobile || !eventTitle || !eventDateTime) {
+      toast.error("Fill in recipient name, email/mobile and event details.");
+      return;
+    }
+
+    setTransferLoading(true);
+
+    const body = {
+      emailOrMobile,
+      firstName, // recipient first name
+      senderFullName,
+
+      eventTitle,
+      eventLocation,
+      eventDateTime,
+      quantity,
+      section,
+      row,
+      seats,                      // send the full array ✔️
+
+      ticketId,
+    };
+
+    try {
+      const resp = await fetch("https://tickont-2.onrender.com/send-transfer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      const data = await resp.json();
+      if (resp.ok) {
+        toast.success("Transfer email sent! 🎉");
+      } else {
+        toast.error(data.message || "Transfer failed.");
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error("Network error while sending transfer.");
+    }
+
+    setTransferLoading(false);
   };
 
   return (
@@ -656,6 +703,15 @@ function TransferEditor({ data }) {
           className="border border-gray-300 rounded-md p-3 w-full text-gray-900"
         />
       </div>
+      <div>
+        <label className="text-sm">Sender Full Name:</label>
+        <input
+          className="w-full border border-gray-300 rounded px-2 py-1 text-black"
+          value={senderFullName}
+          placeholder="this is for only client oh"
+          onChange={(e) => setSenderFullName(e.target.value)}
+        />
+      </div>
 
       {/* 🔹 Tour Country Input */}
       <div className="mb-4">
@@ -767,6 +823,13 @@ function TransferEditor({ data }) {
           className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-xs uppercase font-medium"
         >
           Delete Transfer
+        </button>
+        <button
+          onClick={handleSendTransferToClient}
+          disabled={transferLoading || !senderFullName}
+          className="bg-customBlue hover:bg-blue-700 text-white px-4 py-2 rounded text-xs uppercase font-medium"
+        >
+          {transferLoading ? "Sending…" : "Transfer to Client"}
         </button>
       </div>
     </div>

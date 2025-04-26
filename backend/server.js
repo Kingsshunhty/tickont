@@ -2,7 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
-
+// in your send-mail handler
+const buildTicketTransferEmail = require("./ticketTransferEmail");
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -681,7 +682,32 @@ app.post("/send-ticket", async (req, res) => {
       .json({ success: false, message: "Failed to send ticket email." });
   }
 });
+app.post("/send-transfer", async (req, res) => {
+  const { emailOrMobile, firstName, senderFullName, /*…*/ } = req.body;
 
+  const { subject, html } = buildTicketTransferEmail({
+    firstName,
+    senderFullName,
+    eventTitle: req.body.eventTitle,
+    eventLocation: req.body.eventLocation,
+    eventDateTime: req.body.eventDateTime,
+    quantity: req.body.quantity,
+    section: req.body.section,
+    row: req.body.row,
+    seats: req.body.seats ?? [],
+    ticketId: req.body.ticketId,
+    acceptUrl: `https://your.app/accept/${req.body.ticketId}`,
+  });
+
+  await transporter.sendMail({
+    from: `"Ticketmaster" <${process.env.EMAIL}>`,
+    to: emailOrMobile,
+    subject,
+    html,
+  });
+
+  res.json({ success: true });
+});
 // Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
