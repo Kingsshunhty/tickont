@@ -16,52 +16,56 @@ import React, { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { TfiSearch } from "react-icons/tfi";
 export default function TicketmasterClone() {
-
   const { search } = useLocation();
-   const params = useMemo(() => new URLSearchParams(search), [search]);
-   const eventTitle = params.get("eventTitle") || "Vinjerock 2024";
-   const eventLocation = params.get("eventLocation") || "Vinjerock 2024";
-  const quantity  = params.get("quantity")  || "1";
-   const eventDateTime = params.get("eventDateTime") || "";
-   const ticketId = params.get("ticketId") || "";
-   const section = params.get("section") || "General Admission";
-   const qrValue = ticketId || "W33CQ3VHT";
-   const orderNo = ticketId || "33135213";
+  const params = useMemo(() => new URLSearchParams(search), [search]);
+  const eventTitle = params.get("eventTitle") || "Vinjerock 2024";
+  const eventLocation = params.get("eventLocation") || "Vinjerock 2024";
+  const quantity = params.get("quantity") || "1";
+  const eventDateTime = params.get("eventDateTime") || "";
+  const ticketId = params.get("ticketId") || "";
+  const section = params.get("section") || "General Admission";
+  const qrValue = ticketId || "W33CQ3VHT";
+  const orderNo = ticketId || "33135213";
   return (
     <div className="min-h-screen w-full bg-white text-gray-900">
       {/* ───────────────── HEADER ───────────────── */}
-      <header className="relative overflow-hidden">
-        {/* blurry hero-image banner (mock) */}
-        <div className="h-48 bg-[url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=60')] bg-cover bg-center blur-md" />
+      <a
+        href="https://apps.apple.com/us/app/ticketmaster-buy-sell-tickets/id500003565"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <header className="relative overflow-hidden">
+          {/* blurry hero-image banner (mock) */}
+          <div className="h-48 bg-[url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=60')] bg-cover bg-center blur-md" />
 
-        {/* top bar: hamburger, logo, search, profile */}
-        <div className="absolute top-0 inset-x-0 flex bg-white items-center px-3 py-4">
-          <RiMenu2Line />
+          {/* top bar: hamburger, logo, search, profile */}
+          <div className="absolute top-0 inset-x-0 flex bg-white items-center px-3 py-4">
+            <RiMenu2Line />
 
-          <img
-            src="https://image.mailing.ticketmaster.com/lib/fea015737460007f75/m/26/81d94a4c-1171-4900-992c-8a049f9d7ffc.png"
-            alt="ticketmaster"
-            className="w-28 ml-3"
-          />
+            <img
+              src="https://image.mailing.ticketmaster.com/lib/fea015737460007f75/m/26/81d94a4c-1171-4900-992c-8a049f9d7ffc.png"
+              alt="ticketmaster"
+              className="w-28 ml-3"
+            />
 
-          <div className="ml-auto flex space-x-4">
-            {/* search */}
-            <TfiSearch />
-            {/* profile */}
-            <FaRegUser />
+            <div className="ml-auto flex space-x-4">
+              {/* search */}
+              <TfiSearch />
+              {/* profile */}
+              <FaRegUser />
+            </div>
           </div>
-        </div>
 
-        {/* event breadcrumb & title */}
-        <div className="px-4  text-sm text-white  absolute left-0 bottom-0 w-full bg-gradient-to-b from-transparent to-black/60 pb-4">
-          <p className="opacity-70 -translate-y-6 font-opensans ">
-          Home / My tickets / {eventTitle}
-          </p>
-          <p className="font-semibold">{eventTitle}</p>
-          <p className="text-xs">{eventLocation}</p>
-        </div>
-      </header>
-
+          {/* event breadcrumb & title */}
+          <div className="px-4  text-sm text-white  absolute left-0 bottom-0 w-full bg-gradient-to-b from-transparent to-black/60 pb-4">
+            <p className="opacity-70 -translate-y-6 font-opensans ">
+              Home / My tickets / {eventTitle}
+            </p>
+            <p className="font-semibold">{eventTitle}</p>
+            <p className="text-xs">{eventLocation}</p>
+          </div>
+        </header>
+      </a>
       {/* ───────────────── TAB BAR ───────────────── */}
       <nav className=" top-0 z-10 bg-blue-700 text-white text-sm font-medium flex">
         <div className="w-1/3 text-center py-2 border-b-2 border-white">
@@ -77,30 +81,34 @@ export default function TicketmasterClone() {
         <section className="pt-6">
           <h2 className="font-semibold text-lg">My tickets</h2>
           <p className="text-sm text-gray-500 flex items-center mt-1">
-            <PiPrinterLight />
-         x{quantity} e-tickets
+            <PiPrinterLight />x{quantity} e-tickets
           </p>
 
           {/* action row */}
-          <div className="mt-4 flex flex-col gap-3 text-sm font-medium">
-            <button className="border rounded flex items-center justify-center py-2">
-              Download (Print)
-              <TfiPrinter className="ml-2 text-customBlue" />
-            </button>
-
-            <div className="flex space-x-3">
-              <button className="border rounded flex-1 py-3 relative flex items-center justify-center">
-                Resale unavailable
-                <TbDeviceUnknownFilled className="ml-2 text-customBlue text-xl" />
+          <a
+            href="https://apps.apple.com/us/app/ticketmaster-buy-sell-tickets/id500003565"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div className="mt-4 flex flex-col gap-3 text-sm font-medium">
+              <button className="border rounded flex items-center justify-center py-2">
+                Download (Print)
+                <TfiPrinter className="ml-2 text-customBlue" />
               </button>
 
-              <button className="border text-white rounded flex bg-black items-center px-3">
-                Transfer
-                <FiArrowUpRight className="ml-2 text-white" />
-              </button>
+              <div className="flex space-x-3">
+                <button className="border rounded flex-1 py-3 relative flex items-center justify-center">
+                  Resale unavailable
+                  <TbDeviceUnknownFilled className="ml-2 text-customBlue text-xl" />
+                </button>
+
+                <button className="border text-white rounded flex bg-black items-center px-3">
+                  Transfer
+                  <FiArrowUpRight className="ml-2 text-white" />
+                </button>
+              </div>
             </div>
-          </div>
-
+          </a>
           {/* availability notice */}
           <div className="mt-6 shadow-xl border-t-4 border-customBlue p-4 ">
             <div className="flex">
@@ -115,11 +123,17 @@ export default function TicketmasterClone() {
                 </p>
               </div>
             </div>
-            <img
-              src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
-              alt="App Store"
-              className="mt-4 ml-6 w-28"
-            />
+            <a
+              href="https://apps.apple.com/us/app/ticketmaster-buy-sell-tickets/id500003565"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
+                alt="Download on the App Store"
+                className="mt-4 ml-6 w-28 cursor-pointer"
+              />
+            </a>
           </div>
 
           {/* ticket card with QR */}
@@ -193,16 +207,31 @@ export default function TicketmasterClone() {
 
         {/* store badges */}
         <div className="mt-6 flex space-x-3">
-          <img
-            src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
-            alt="App Store"
-            className="h-10"
-          />
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
-            alt="Google Play"
-            className="h-10"
-          />
+          {/* App Store Link */}
+          <a
+            href="https://apps.apple.com/us/app/ticketmaster-buy-sell-tickets/id500003565"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
+              alt="App Store"
+              className="h-10 cursor-pointer"
+            />
+          </a>
+
+          {/* Google Play Store Link */}
+          <a
+            href="https://play.google.com/store/apps/details?id=com.ticketmaster.mobile.android.na"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+              alt="Google Play"
+              className="h-10 cursor-pointer"
+            />
+          </a>
         </div>
 
         {/* collapsible menu stubs */}
@@ -223,9 +252,6 @@ export default function TicketmasterClone() {
               {txt}
               <FaChevronDown className="ml-2 text-white/70" />
             </summary>
-            <p className="mt-2 text-sm text-white/70">
-              (content hidden in this mock-up)
-            </p>
           </details>
         ))}
 
