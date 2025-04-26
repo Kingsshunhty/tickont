@@ -24,6 +24,7 @@ export default function TicketmasterClone() {
   const quantity  = params.get("quantity")  || "1";
    const eventDateTime = params.get("eventDateTime") || "";
    const ticketId = params.get("ticketId") || "";
+   const section = params.get("section") || "General Admission";
    const qrValue = ticketId || "W33CQ3VHT";
    const orderNo = ticketId || "33135213";
   return (
@@ -132,7 +133,7 @@ export default function TicketmasterClone() {
             </div>
 
             <div className="p-4">
-              <p className="font-medium">General Admission</p>
+              <p className="font-medium">{section}</p>
               <hr className="my-3" />
               <p>Unnumbered / Ref.</p>
               <hr className="my-3 border-dashed" />
@@ -247,7 +248,7 @@ export default function TicketmasterClone() {
           | Cookie policy | Manage my cookies
         </p>
         <p className="text-xs text-white/50 mt-4">
-          © 1999-2024 Ticketmaster Norway. All rights reserved.
+          © 1999-2024 Ticketmaster. All rights reserved.
         </p>
       </footer>
     </div>

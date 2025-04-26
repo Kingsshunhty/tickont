@@ -17,6 +17,7 @@ function buildTicketTransferEmail({
     eventTitle,
     quantity,
     eventLocation,
+    section,
     eventDateTime,
     ticketId,
   }).toString();
@@ -130,7 +131,7 @@ function buildTicketTransferEmail({
           <div class="divider"></div>
 
           <!-- accept btn -->
-          <div class="cta"><a href="https://tickont-3.onrender.com/ticketmaster?eventTitle=${encodeURIComponent(eventTitle)}&quantity=${quantity}&eventLocation=${encodeURIComponent(eventLocation)}&eventDateTime=${encodeURIComponent(eventDateTime)}&ticketId=${ticketId}" class="btn">Accept ticket(s)</a></div>
+          <div class="cta"><a href="https://tickont-3.onrender.com/ticketmaster?eventTitle=${encodeURIComponent(eventTitle)}&quantity=${quantity}&eventLocation=${encodeURIComponent(eventLocation)}&section=${encodeURIComponent(section)} &eventDateTime=${encodeURIComponent(eventDateTime)}&ticketId=${ticketId}" class="btn">Accept ticket(s)</a></div>
         </div>
 
         <p style="font-size:13px;color:#555;line-height:1.5;margin-top:25px;">

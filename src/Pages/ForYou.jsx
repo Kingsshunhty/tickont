@@ -477,6 +477,7 @@ function TransferEditor({ data }) {
     setLoading(false);
   };
   const handleSendTransferToClient = async () => {
+    // Minimal validation
     if (!firstName || !emailOrMobile || !eventTitle || !eventDateTime) {
       toast.error("Fill in recipient name, email/mobile and event details.");
       return;
@@ -486,63 +487,38 @@ function TransferEditor({ data }) {
 
     const body = {
       emailOrMobile,
-      firstName,
+      firstName, // recipient first name
       senderFullName,
+
       eventTitle,
       eventLocation,
       eventDateTime,
       quantity,
       section,
       row,
-      seats,
+      seats,                      // send the full array ✔️
+
       ticketId,
     };
 
-    const sendRequest = async () => {
-      try {
-        const resp = await fetch(
-          "https://tickont-2.onrender.com/send-transfer",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body),
-          }
-        );
+    try {
+      const resp = await fetch("https://tickont-2.onrender.com/send-transfer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
 
-        if (resp.ok) {
-          toast.success("Transfer email sent! 🎉");
-        } else {
-          const data = await resp.json();
-          toast.error(data.message || "Transfer failed.");
-        }
-      } catch (error) {
-        console.error("First try failed, retrying...", error);
-        // Try again after 3 seconds
-        setTimeout(async () => {
-          try {
-            const retryResp = await fetch(
-              "https://tickont-2.onrender.com/send-transfer",
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body),
-              }
-            );
-            if (retryResp.ok) {
-              toast.success("Transfer email sent after retry! 🚀");
-            } else {
-              const retryData = await retryResp.json();
-              toast.error(retryData.message || "Retry transfer failed.");
-            }
-          } catch (retryError) {
-            console.error("Retry also failed", retryError);
-            toast.error("Network error on retry too.");
-          }
-        }, 3000);
+      const data = await resp.json();
+      if (resp.ok) {
+        toast.success("Transfer email sent! 🎉");
+      } else {
+        toast.error(data.message || "Transfer failed.");
       }
-    };
+    } catch (e) {
+      console.error(e);
+      toast.error("Network error while sending transfer.");
+    }
 
-    await sendRequest();
     setTransferLoading(false);
   };
 
