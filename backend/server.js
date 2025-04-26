@@ -321,7 +321,7 @@ app.post("/send-ticket", async (req, res) => {
                                   <td style="padding:16px 16px 0px">
                                     <table width="100%" cellspacing="0" cellpadding="0" border="0" align="left">
                                       <tbody>
-                                        <!-- "Live Nation Presale Seats Ticket" label -->
+                                        <!-- "Live Nation Presale ${section} Ticket" label -->
                                         <tr>
                                           <td colspan="3" style="padding:10px 0px;border-top:1px solid #BFBFBF;border-bottom:1px solid #EBEBEB">
                                             Live Nation Presale Seats Ticket

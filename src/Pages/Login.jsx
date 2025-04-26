@@ -44,8 +44,8 @@ const Login = () => {
       toast.success("🎉 Login successful!");
 
       setTimeout(() => {
-        navigate("/home"); // Redirect to home page
-      }, 2000); // Delay to allow users to see success message
+        navigate("/splash"); // Redirect to home page
+      }, 500); // Delay to allow users to see success message
     } catch (err) {
       if (err.code === "auth/user-not-found") {
         toast.error("❌ User does not exist.");

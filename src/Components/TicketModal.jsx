@@ -394,17 +394,28 @@ const TicketModal = ({ isOpen, onClose, ticket }) => {
             {/* Transfer & Sell Buttons */}
             <div className="mt-6 flex justify-center space-x-4">
               <button
-                className="bg-customBlue text-white w-44 py-2 h-10 rounded-md text-sm items-center flex justify-center  font-medium"
+                className="bg-customBlue text-white w-36 py-6 h-10 rounded-xl text-sm items-center flex justify-center  font-medium"
                 onClick={() => setIsTransferOpen(true)}
               >
                 Transfer
               </button>
-              <button className="bg-customBlue text-white w-44 py-3 h-10 rounded-md items-center flex justify-center text-sm font-medium">
+              <button
+                disabled={!ticket.forSale}
+                className={`
+    w-36 py-6 h-10 rounded-xl flex items-center justify-center text-sm font-medium
+    ${
+      ticket.forSale
+        ? "bg-customBlue text-white hover:bg-blue-700"
+        : "bg-gray-400 text-gray-200 cursor-not-allowed opacity-50"
+    }
+  `}
+              >
                 Sell
               </button>
             </div>
             <div className="mt-7">
-              <MapComponent />
+              
+              {/* <MapComponent lat={ticket.lat} lng={ticket.lng} /> */}
             </div>
           </div>
         </div>

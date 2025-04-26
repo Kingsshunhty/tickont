@@ -329,6 +329,7 @@ function TransferEditor({ data }) {
   const [eventLocation, setEventLocation] = useState(data.eventLocation || "");
   const [note, setNote] = useState(data.note || "");
   const [row, setRow] = useState(data.row || "");
+  
   const [section, setSection] = useState(data.section || "");
   const [ticketId, setTicketId] = useState(data.ticketId || "");
   const [emailOrMobile, setEmailOrMobile] = useState(data.emailOrMobile || "");

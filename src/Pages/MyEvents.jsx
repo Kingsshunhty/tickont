@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../Components/NavBar";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchTickets, deleteTicket } from "../redux/ticketSlice";
-import { doc, getDoc } from "firebase/firestore";
+import { setTickets, deleteTicket } from "../redux/ticketSlice";
+import {  collection, onSnapshot, doc, getDoc } from "firebase/firestore";
 import { LuDot } from "react-icons/lu";
 import { IoTicket } from "react-icons/io5";
 import CountryFlag from "react-country-flag";
@@ -31,14 +31,29 @@ const MyEvents = () => {
   // Modal state
   const [showModal, setShowModal] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
-
-  // Fetch tickets only once using Redux
   useEffect(() => {
-    // If there are no tickets yet, fetch them
-    if (!tickets || tickets.length === 0) {
-      dispatch(fetchTickets());
-    }
-  }, [dispatch, tickets]);
+    const ticketsRef = collection(db, "tickets");
+    const unsubscribe = onSnapshot(
+      ticketsRef,
+      (snapshot) => {
+        const updated = snapshot.docs.map((d) => ({
+          id: d.id,
+          ...d.data(),
+        }));
+        dispatch(setTickets(updated));
+      },
+      (error) => console.error("Tickets listener error:", error)
+    );
+    return () => unsubscribe();
+  }, [dispatch]);
+
+  // // Fetch tickets only once using Redux
+  // useEffect(() => {
+  //   // If there are no tickets yet, fetch them
+  //   if (!tickets || tickets.length === 0) {
+  //     dispatch(fetchTickets());
+  //   }
+  // }, [dispatch, tickets]);
 
   // Fetch user's country from Firestore if user exists
   useEffect(() => {

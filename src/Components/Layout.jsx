@@ -5,7 +5,7 @@ const Layout = ({ children }) => {
   const location = useLocation();
 
   // Define routes where BottomNav should NOT appear
-  const hideBottomNavOn = ["/"];
+  const hideBottomNavOn = ["/", "/splash", ];
 
   return (
     <div className="relative min-h-screen flex flex-col">

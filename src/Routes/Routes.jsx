@@ -4,6 +4,7 @@ import Login from "../Pages/Login";
 import { AuthProvider } from "../Context/AuthContext";
 import ForYou from "../Pages/ForYou";
 import ProtectedRoute from "./ProtectedRoutes";
+import SplashScreen from "../Components/SplashScreen";
 // import Profile from "./pages/Profile";
 // import Events from "./pages/Events";
 // import Sell from "./pages/Sell";
@@ -14,6 +15,7 @@ const AppRoutes = () => {
     <AuthProvider>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/splash" element={<SplashScreen />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<Home />} />
           <Route path="/myevents" element={<MyEvents />} />

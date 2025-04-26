@@ -2,10 +2,9 @@ import React from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Default position (Latitude, Longitude)
-const position = [40.7128, -74.006]; // New York City
 
-const MapComponent = () => {
+const MapComponent = ({ lat, lng })  => {
+  const position = [lat, lng];
   return (
     <div className="h-[400px] w-full">
       <MapContainer
@@ -21,7 +20,7 @@ const MapComponent = () => {
 
         {/* Marker */}
         <Marker position={position}>
-          <Popup>New York City 📍</Popup>
+         
         </Marker>
       </MapContainer>
     </div>

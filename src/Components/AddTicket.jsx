@@ -48,6 +48,11 @@ const AddTicket = () => {
   const [error, setError] = useState("");
   const [admissionType, setAdmissionType] = useState("");
   const [section, setSection] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+
+  const [forSale, setForSale] = useState(false); // new
+
   const [ticketHeader, setTicketHeader] = useState("");
   const [row, setRow] = useState(""); // New: Row input
   const [seatNumber, setSeatNumber] = useState(""); // New: Seat Number input
@@ -120,7 +125,9 @@ const AddTicket = () => {
         quantity: ticketQuantity,
         row, // Save row to Firestore
         seatNumber, // Save seat number to Firestore
-
+        forSale,
+        latitude: parseFloat(latitude), // ← new
+        longitude: parseFloat(longitude), // ← new
         coverImage: imageUrl,
         admissionType, // ✅ New field
         section, // ✅ New field
@@ -139,6 +146,7 @@ const AddTicket = () => {
       setRow("");
       setSeatNumber("");
       setAdmissionType("");
+      setForSale(false); // Reset forSale state
       setCoverImage(null);
       setPreviewUrl(null);
     } catch (err) {
@@ -246,6 +254,19 @@ const AddTicket = () => {
             />
           </div>
         </div>
+        {/* For Sale Checkbox */}
+        <div className="mb-4 flex items-center">
+          <input
+            type="checkbox"
+            id="forSale"
+            checked={forSale}
+            onChange={(e) => setForSale(e.target.checked)}
+            className="mr-2"
+          />
+          <label htmlFor="forSale" className="text-sm font-medium">
+            For Sale
+          </label>
+        </div>
 
         {/* Location */}
         <div className="mb-4">
@@ -330,6 +351,50 @@ const AddTicket = () => {
             className="border border-gray-400 rounded-md p-3 w-full text-gray-900 focus:ring-2 focus:ring-blue-400"
           />
         </div>
+        {/* Latitude */}
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Latitude: this is for the map</label>
+          <input
+            type="number"
+            step="any"
+            value={latitude}
+            onChange={(e) => setLatitude(e.target.value)}
+            placeholder="e.g. 6.5244"
+            className="
+              border 
+              border-gray-400 
+              rounded-md 
+              p-3 
+              w-full 
+              text-gray-900
+              focus:ring-2 
+              focus:ring-blue-400
+            "
+          />
+        </div>
+
+        {/* Longitude */}
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Longitude: this is for the map</label>
+          <input
+            type="number"
+            step="any"
+            value={longitude}
+            onChange={(e) => setLongitude(e.target.value)}
+            placeholder="e.g. 3.3792"
+            className="
+              border 
+              border-gray-400 
+              rounded-md 
+              p-3 
+              w-full 
+              text-gray-900
+              focus:ring-2 
+              focus:ring-blue-400
+            "
+          />
+        </div>
+
         {/* Section */}
         <div className="mb-4">
           <label className="block font-medium mb-1">Section:</label>
