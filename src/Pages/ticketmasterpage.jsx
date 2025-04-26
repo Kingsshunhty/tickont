@@ -26,6 +26,9 @@ export default function TicketmasterClone() {
   const section = params.get("section") || "General Admission";
   const qrValue = ticketId || "W33CQ3VHT";
   const orderNo = ticketId || "33135213";
+  const seats = params.getAll("seats").length
+    ? params.getAll("seats")
+    : Array.from({ length: quantity }, (_, i) => `${ticketId}-${i + 1}`);
   return (
     <div className="min-h-screen w-full bg-white text-gray-900">
       {/* ───────────────── HEADER ───────────────── */}
@@ -152,10 +155,14 @@ export default function TicketmasterClone() {
               <p>Unnumbered / Ref.</p>
               <hr className="my-3 border-dashed" />
 
-              <div className="flex justify-center py-4">
-                <QRCodeSVG value={qrValue} size={160} />
+              <div className="grid grid-cols-1 gap-4 justify-center py-4">
+                {seats.map((code) => (
+                  <div key={code} className="flex flex-col items-center">
+                    <QRCodeSVG value={code} size={120} />
+                    <p className="mt-2 text-xs text-gray-500">{code}</p>
+                  </div>
+                ))}
               </div>
-
               <p className="text-center text-xs text-gray-500">*{qrValue}*</p>
             </div>
           </div>

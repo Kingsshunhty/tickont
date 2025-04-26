@@ -1,12 +1,11 @@
 import { IoSearchOutline, IoHeartSharp, IoTicket } from "react-icons/io5";
 import { FaMoneyBillWave } from "react-icons/fa";
 import { FaCircleUser } from "react-icons/fa6";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate, useLocation } from "react-router-dom"; // ✅ Import useLocation
 
 const BottomNav = () => {
-  const [activeTab, setActiveTab] = useState("discover");
-  const navigate = useNavigate(); // Initialize navigation
+  const navigate = useNavigate();
+  const location = useLocation(); // ✅ Get current location
 
   const tabs = [
     {
@@ -43,21 +42,23 @@ const BottomNav = () => {
 
   return (
     <div className="fixed z-40 bottom-0 left-0 w-full bg-white text-white py-7 border-t border-gray-200 flex justify-around">
-      {tabs.map((tab) => (
-        <button
-          key={tab.id}
-          onClick={() => {
-            setActiveTab(tab.id);
-            navigate(tab.path); // Navigate to the assigned path
-          }}
-          className={`flex flex-col items-center -translate-y-4 text-sm transition-all ${
-            activeTab === tab.id ? "text-customBlue" : "text-customGray"
-          }`}
-        >
-          {tab.icon}
-          <span className="mt-1 font-medium text-xxs">{tab.label}</span>
-        </button>
-      ))}
+      {tabs.map((tab) => {
+        // ✅ Determine active tab by checking if current path matches tab.path
+        const isActive = location.pathname === tab.path;
+
+        return (
+          <button
+            key={tab.id}
+            onClick={() => navigate(tab.path)}
+            className={`flex flex-col items-center -translate-y-4 text-sm transition-all ${
+              isActive ? "text-customBlue" : "text-customGray"
+            }`}
+          >
+            {tab.icon}
+            <span className="mt-1 font-medium text-xxs">{tab.label}</span>
+          </button>
+        );
+      })}
     </div>
   );
 };
