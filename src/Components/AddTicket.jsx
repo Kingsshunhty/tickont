@@ -95,6 +95,8 @@ const AddTicket = () => {
       !dateValue ||
       !timeValue ||
       !location ||
+      !lat ||
+      !lng ||
       !ticketQuantity ||
       !coverImage
     ) {

@@ -322,10 +322,10 @@ app.post("/send-ticket", async (req, res) => {
                                   <td style="padding:16px 16px 0px">
                                     <table width="100%" cellspacing="0" cellpadding="0" border="0" align="left">
                                       <tbody>
-                                        <!-- "Live Nation Presale ${section} Ticket" label -->
+                                        <!-- "Live Nation Presale  Ticket" label -->
                                         <tr>
                                           <td colspan="3" style="padding:10px 0px;border-top:1px solid #BFBFBF;border-bottom:1px solid #EBEBEB">
-                                            Live Nation Presale Seats Ticket
+                                            Live Nation Presale ${section} Ticket
                                           </td>
                                         </tr>
                                         <!-- Our dynamic seat rows -->
@@ -391,7 +391,7 @@ app.post("/send-ticket", async (req, res) => {
 
                                 <tr>
                                   <td style="padding-bottom:16px">
-                                    ${qtyNum} Live Nation Presale Seats Ticket<br>
+                                    ${qtyNum} Live Nation Presale ${section} Ticket<br>
                                       <font style="font-size:12px;color:rgb(100,100,100)">
                                         ${currency} ${pricePerTicketFmt} x${qtyNum}
                                       </font>

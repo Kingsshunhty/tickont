@@ -754,7 +754,7 @@ function TransferDetailModal({
 
             <div className="space-y-1">
               <label className="block text-black font-medium">
-                Email or Mobile Number
+                Email 
               </label>
               <input
                 type="text"

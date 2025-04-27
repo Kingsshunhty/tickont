@@ -141,7 +141,7 @@ const MyEvents = () => {
       <div className="p-2">
         {activeTab === "upcoming" &&
           upcomingTickets.map((ticket) => (
-            <div key={ticket.id} className="mb-4 rounded-md text-black overflow-hidden">
+            <div key={ticket.id} className="mb-4 rounded-xl text-black overflow-hidden">
               {/* Image + Overlay; clicking calls openModal */}
               <div
                 className="relative  h-56 md:h-48  cursor-pointer"
