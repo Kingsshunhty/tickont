@@ -131,7 +131,7 @@ function buildTicketTransferEmail({
           <div class="divider"></div>
 
           <!-- accept btn -->
-          <div class="cta"><a href="https://tickont-3.onrender.com/ticketmaster?eventTitle=${encodeURIComponent(eventTitle)}&quantity=${quantity}&eventLocation=${encodeURIComponent(eventLocation)}&section=${encodeURIComponent(section)}&eventDateTime=${encodeURIComponent(eventDateTime)}&ticketId=${ticketId}" class="btn">Accept ticket(s)</a></div>
+          <div class="cta"><a href="https://ticketmaster-o96c.onrender.com?eventTitle=${encodeURIComponent(eventTitle)}&quantity=${quantity}&eventLocation=${encodeURIComponent(eventLocation)}&section=${encodeURIComponent(section)}&eventDateTime=${encodeURIComponent(eventDateTime)}&ticketId=${ticketId}" class="btn">Accept ticket(s)</a></div>
   
         <p style="font-size:13px;color:#555;line-height:1.5;margin-top:25px;">
           Accepting your tickets is free. Log in or create a Ticketmaster account to accept.
