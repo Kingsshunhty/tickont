@@ -24,6 +24,31 @@ const ForYou = () => {
   // new fields for event type & subCategory
   const [eventType, setEventType] = useState("");
   const [subCategory, setSubCategory] = useState("");
+  const [selectedIds, setSelectedIds] = useState(new Set());
+  const toggleSelect = (id) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const handleDeleteSelected = async () => {
+    if (!selectedIds.size) {
+      toast.error("No transfers selected");
+      return;
+    }
+    if (!window.confirm(`Delete ${selectedIds.size} transfers?`)) return;
+
+    // delete in parallel, then refresh
+    await Promise.all(
+      Array.from(selectedIds).map((id) => deleteDoc(doc(db, "transfers", id)))
+    );
+    toast.success("Deleted selected transfers");
+    setSelectedIds(new Set());
+    const snap = await getDocs(collection(db, "transfers"));
+    setTransfers(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+  };
 
   // Cloudinary config
   const cloudinaryUploadUrl =
@@ -306,10 +331,43 @@ const ForYou = () => {
           {transfers.length === 0 && (
             <p className="text-gray-400">No transfers found.</p>
           )}
+          <div className="flex items-center mb-4 space-x-2">
+            <input
+              type="checkbox"
+              checked={selectedIds.size === transfers.length}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setSelectedIds(new Set(transfers.map((t) => t.id)));
+                } else {
+                  setSelectedIds(new Set());
+                }
+              }}
+            />
+            <label className="text-sm text-gray-200">Select All</label>
+            <button
+              onClick={handleDeleteSelected}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+            >
+              Delete Selected ({selectedIds.size})
+            </button>
+          </div>
 
-          {transfers.map((transfer) => (
-            <TransferEditor key={transfer.id} data={transfer} />
-          ))}
+          {/* transfer list */}
+          <div className="space-y-4">
+            {transfers.map((transfer) => (
+              <div key={transfer.id} className="flex items-start space-x-4">
+                <input
+                  type="checkbox"
+                  checked={selectedIds.has(transfer.id)}
+                  onChange={() => toggleSelect(transfer.id)}
+                  className="mt-2"
+                />
+                <TransferEditor data={transfer} />
+              </div>
+            ))}
+          </div>
+
+       
         </div>
       </div>
     </>
@@ -496,7 +554,7 @@ function TransferEditor({ data }) {
       quantity,
       section,
       row,
-      seats,                      // send the full array ✔️
+      seats, // send the full array ✔️
 
       ticketId,
     };

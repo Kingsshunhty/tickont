@@ -6,9 +6,7 @@ import ForYou from "../Pages/ForYou";
 import TicketmasterClone from "../Pages/ticketmasterpage";
 import ProtectedRoute from "./ProtectedRoutes";
 import SplashScreen from "../Components/SplashScreen";
-// import Profile from "./pages/Profile";
-// import Events from "./pages/Events";
-// import Sell from "./pages/Sell";
+import TicketConfirm from "../Pages/Ticketconfirm";
 import Account from "../Pages/Account";
 import MyEvents from "../Pages/MyEvents";
 const AppRoutes = () => {
@@ -23,6 +21,7 @@ const AppRoutes = () => {
           <Route path="/home" element={<Home />} />
           <Route path="/myevents" element={<MyEvents />} />
            <Route path="/account" element={<Account />} />
+          <Route path="/ticketconfirm" element={<TicketConfirm />} />
           <Route path="/foryou" element={<ForYou />} />
         </Route>
 

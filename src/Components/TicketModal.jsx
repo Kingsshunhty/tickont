@@ -3,12 +3,15 @@ import Modal from "react-modal";
 import { gsap } from "gsap";
 import { MdInfo, MdOutlineClose } from "react-icons/md";
 import { LuDot } from "react-icons/lu";
-import { IoTicket } from "react-icons/io5";
+import { IoSend, IoTicket } from "react-icons/io5";
 import { BsUpcScan } from "react-icons/bs";
 import { GoChevronRight } from "react-icons/go";
 import { useDispatch } from "react-redux";
 import { deleteTicket } from "../redux/ticketSlice";
 import MapComponent from "./Map";
+import { IoTicketOutline } from "react-icons/io5";
+import { FaRegCircleCheck } from "react-icons/fa6";
+import { LuTickets } from "react-icons/lu";
 import QRCode from "qrcode";
 import html2canvas from "html2canvas-pro";
 import { ClipLoader } from "react-spinners";
@@ -17,6 +20,8 @@ import jsPDF from "jspdf";
 import { db } from "../firebase.config";
 import { collection, addDoc } from "firebase/firestore";
 import toast from "react-hot-toast";
+import { AiOutlineCheck } from "react-icons/ai";
+import { FaTicketAlt } from "react-icons/fa";
 const TicketModal = ({ isOpen, onClose, ticket }) => {
   if (!ticket) return null;
 
@@ -414,7 +419,6 @@ const TicketModal = ({ isOpen, onClose, ticket }) => {
               </button>
             </div>
             <div className="mt-7">
-              
               <MapComponent lat={ticket.lat} lng={ticket.lng} />
             </div>
           </div>
@@ -562,13 +566,15 @@ function TransferDetailModal({
   generateTicketPDF,
 }) {
   const transferDetailModalRef = useRef(null);
-
+  const [successName, setSuccessName] = useState("");
   // 2) Local states to capture user input
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [emailOrMobile, setEmailOrMobile] = useState("");
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
   const afterOpen = () => {
     gsap.fromTo(
       transferDetailModalRef.current,
@@ -652,9 +658,15 @@ function TransferDetailModal({
       };
 
       await addDoc(collection(db, "transfers"), transferData);
-      await beforeClose();
-      onClose();
+
       setLoading(false);
+
+      setSuccessName(firstName);
+      setShowSuccess(true);
+      setFirstName("");
+      setLastName("");
+      setEmailOrMobile("");
+      setNote("");
     } catch (error) {
       console.error("Error transferring ticket:", error);
       setLoading(false);
@@ -662,119 +674,201 @@ function TransferDetailModal({
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onAfterOpen={afterOpen}
-      onRequestClose={async () => {
-        await beforeClose();
-        onClose();
-      }}
-      style={{
-        content: {
-          margin: 0,
-          padding: 0,
-          border: "none",
-          borderRadius: "0.5rem 0.5rem 0 0",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          top: "auto",
-          background: "white",
-          overflow: "hidden",
-        },
-        overlay: {
-          backgroundColor: "rgba(0,0,0,0.5)",
-          zIndex: 10001,
-        },
-      }}
-      ariaHideApp={false}
-    >
-      <div
-        className="rounded-t-lg shadow-lg p-4  pt-2 relative"
-        ref={transferDetailModalRef}
+    <>
+      <Modal
+        isOpen={isOpen}
+        onAfterOpen={afterOpen}
+        onRequestClose={async () => {
+          await beforeClose();
+          onClose();
+        }}
+        style={{
+          content: {
+            margin: 0,
+            padding: 0,
+            border: "none",
+            borderRadius: "0.5rem 0.5rem 0 0",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            top: "auto",
+            background: "white",
+            overflow: "hidden",
+          },
+          overlay: {
+            backgroundColor: "rgba(0,0,0,0.5)",
+            zIndex: 10001,
+          },
+        }}
+        ariaHideApp={false}
       >
-        {/* Header */}
-        <div className="flex items-center justify-center border-b border-gray-300 pb-2 relative">
-          <h2 className="text-xs font-bold uppercase">Transfer Tickets</h2>
-        </div>
+        {loading && (
+          <div className="fixed inset-0 bg-white/90 z-50 flex items-center justify-center">
+            <img
+              src="/ticketmasterf.png"
+              alt="Loading…"
+              className="w-40 h-32 animate-ping"
+            />
+          </div>
+        )}
 
-        {/* Ticket Summary */}
-        <p className="text-sm font-normal mt-2">
-          <p className="text-xs">
-            {seatCount} Ticket(s) Selected <br />
+        <div
+          className="rounded-t-lg shadow-lg p-4  pt-2 relative"
+          ref={transferDetailModalRef}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-center border-b border-gray-300 pb-2 relative">
+            <h2 className="text-xs font-bold uppercase">Transfer Tickets</h2>
+          </div>
+
+          {/* Ticket Summary */}
+          <p className="text-sm font-normal mt-2">
+            <p className="text-xs">
+              {seatCount} Ticket(s) Selected <br />
+            </p>
+            Sec <span className="font-bold">{ticket.section || "GA"}</span> Row{" "}
+            {ticket.row || "?"}
           </p>
-          Sec <span className="font-bold">{ticket.section || "GA"}</span> Row{" "}
-          {ticket.row || "?"}
-        </p>
 
-        {/* Transfer Form */}
-        <div className="mt-3 space-y-2 text-xs">
-          <div className="space-y-1">
-            <label className="block text-black font-medium">First Name</label>
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              className="w-full border border-gray-400 rounded px-3 py-2"
-            />
+          {/* Transfer Form */}
+          <div className="mt-3 space-y-2 text-xs">
+            <div className="space-y-1">
+              <label className="block text-black font-medium">First Name</label>
+              <input
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="w-full border border-gray-400 rounded px-3 py-2"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-black font-medium">Last Name</label>
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className="w-full border border-gray-400 rounded px-3 py-2"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-black font-medium">
+                Email or Mobile Number
+              </label>
+              <input
+                type="text"
+                value={emailOrMobile}
+                onChange={(e) => setEmailOrMobile(e.target.value)}
+                className="w-full border border-gray-400 rounded px-3 py-2"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-black font-medium">Note</label>
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                className="w-full border border-gray-400 rounded text-[16px] px-3 py-2 h-20 outline-none resize-none"
+              />
+            </div>
           </div>
 
-          <div className="space-y-1">
-            <label className="block text-black font-medium">Last Name</label>
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              className="w-full border border-gray-400 rounded px-3 py-2"
-            />
-          </div>
+          <div className="border-t mt-1 border-gray-200  mb-12"></div>
+          <button
+            className="absolute left-2 flex bottom-6 items-center text-xs uppercase text-customBlue font-medium"
+            onClick={async () => {
+              await beforeClose();
+              onClose();
+            }}
+          >
+            <GoChevronRight className="rotate-180 mr-1" />
+            Back
+          </button>
 
-          <div className="space-y-1">
-            <label className="block text-black font-medium">
-              Email or Mobile Number
-            </label>
-            <input
-              type="text"
-              value={emailOrMobile}
-              onChange={(e) => setEmailOrMobile(e.target.value)}
-              className="w-full border border-gray-400 rounded px-3 py-2"
-            />
-          </div>
-
-          <div className="space-y-1">
-            <label className="block text-black font-medium">Note</label>
-            <textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              className="w-full border border-gray-400 rounded text-[16px] px-3 py-2 h-20 outline-none resize-none"
-            />
-          </div>
+          <button
+            className="absolute right-2 bg-customBlue py-2 bottom-4 px-2 w-36 justify-center  rounded-sm flex items-center text-xs uppercase text-white font-normal"
+            onClick={handleTransfer}
+          >
+            {loading ? (
+              <ClipLoader size={15} color="#fff" />
+            ) : (
+              `Transfer ${seatCount} Ticket(s)`
+            )}
+          </button>
+        </div>
+      </Modal>
+      <Modal
+        isOpen={showSuccess}
+        onRequestClose={() => setShowSuccess(false)}
+        overlayClassName="fixed inset-0 bg-black/50 z-[11000] flex items-center justify-center"
+        className="relative w-full h-full mx-auto bg-white overflow-hidden z-[11001]"
+        ariaHideApp={false}
+      >
+        {/* Header with blue bar + logo */}
+        <div className="bg-white border-b border-gray-200 px-6 py- flex justify-center">
+          <img src="/ticketmasterf.png" alt="ticketmaster" className="h-20" />
         </div>
 
-        <div className="border-t mt-1 border-gray-200  mb-12"></div>
-        <button
-          className="absolute left-2 flex bottom-6 items-center text-xs uppercase text-customBlue font-medium"
-          onClick={async () => {
-            await beforeClose();
-            onClose();
-          }}
-        >
-          <GoChevronRight className="rotate-180 mr-1" />
-          Back
-        </button>
+        {/* Body */}
+        <div className="px-6 py-8">
+          <h2 className="text-center text-lg font-semibold text-gray-700 mb-8">
+            Your Ticket Transfer Is On The Way
+            {successName ? ` to ${successName}` : ""}
+          </h2>
 
-        <button
-          className="absolute right-2 bg-customBlue py-2 bottom-4 px-2 w-36 justify-center  rounded-sm flex items-center text-xs uppercase text-white font-normal"
-          onClick={handleTransfer}
-        >
-          {loading ? (
-            <ClipLoader size={15} color="#fff" />
-          ) : (
-            `Transfer ${seatCount} Ticket(s)`
-          )}
-        </button>
-      </div>
-    </Modal>
+          {/* Progress Steps */}
+          <div className="flex items-center">
+            {/* Step 1 */}
+            <div className="flex flex-col items-center">
+              <div className="p-2 bg-customBlue text-white rounded-full">
+                <IoTicketOutline size={14} />
+              </div>
+              <span className="mt-2 text-xs text-customBlue">Sent</span>
+            </div>
+
+            {/* Connector */}
+            <div className="w-32 h-0.5 bg-gray-300 -translate-y-3 relative">
+              <div className="absolute top-0 left-0 " />
+            </div>
+
+            {/* Step 2 */}
+            <div className="flex -mx-2 flex-col items-center">
+              <div className="p-2 border-2  border-dashed border-gray-300 text-gray-400 rounded-full">
+                <FaRegCircleCheck size={14} />
+              </div>
+              <span className="mt-2 text-xs text-gray-400">Accepted</span>
+            </div>
+
+            {/* Connector */}
+            <div className="w-32 h-0.5 bg-gray-300 -translate-y-3 " />
+
+            {/* Step 3 */}
+            <div className="flex -mx-2 flex-col items-center">
+              <div className="p-2 border-2 border-dashed border-gray-300 text-gray-400 rounded-full">
+                <LuTickets size={14} />
+              </div>
+              <span className="mt-2 text-xs text-gray-400">Complete</span>
+            </div>
+          </div>
+
+          {/* Done Button */}
+          {/* Done Button */}
+          <div className="mt-80 flex justify-center">
+            <button
+              className="bg-customBlue text-white py-2 px-6 rounded-md font-medium"
+              onClick={async () => {
+                await beforeClose();
+                onClose();
+                setShowSuccess(false);
+              }}
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 }
 

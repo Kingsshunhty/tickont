@@ -94,7 +94,7 @@ const Home = () => {
     <>
       <Navbar />
 
-      <main className="bg-white text-white">
+      <main className="bg-white  text-white">
         {/* MAIN EVENT or fallback hero */}
         {mainEventPost ? (
           <section

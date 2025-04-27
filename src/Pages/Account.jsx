@@ -25,7 +25,7 @@ import { fetchUser, updateUser } from "../redux/userSlice";
 
 const Account = () => {
   const { user, logout } = useAuth();
-const navigate = useNavigate();
+  const navigate = useNavigate();
   // Redux: get userData and status from store
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.user.userData);
@@ -104,7 +104,27 @@ const navigate = useNavigate();
   });
   const [showCityDropdown, setShowCityDropdown] = useState(false);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [showFavoriteInput, setShowFavoriteInput] = useState(false);
+  const [favoriteValue, setFavoriteValue] = useState("");
 
+  // toggle the input visibility
+  const handleFavoriteClick = () => {
+    setShowFavoriteInput((v) => !v);
+  };
+
+  // save to Firestore
+  const handleSaveFavorite = async () => {
+    if (!user) return;
+    try {
+      const userRef = doc(db, "users", user.uid);
+      await updateDoc(userRef, { Ticketname: favoriteValue });
+      toast.success("Favourite saved!");
+      setShowFavoriteInput(false);
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not save favourite.");
+    }
+  };
   // Fetch user data from Firestore on mount using Redux
   useEffect(() => {
     if (user && !userData) {
@@ -369,13 +389,35 @@ const navigate = useNavigate();
       {/* Preferences */}
       <div className="px-2 mt-4">
         <h3 className="text-base font-semibold mb-2">Preferences</h3>
-        <div className="flex justify-between items-center px-2 py-3">
+        <div
+          onClick={handleFavoriteClick}
+          className="flex justify-between items-center px-2 py-3 cursor-pointer"
+        >
           <div className="flex items-center gap-3">
             <PiHeartStraightBold className="text-xl" />
             <p>My Favourites</p>
           </div>
           <GoChevronRight className="text-gray-900 text-2xl" />
         </div>
+
+        {/* Inline input for Ticketname */}
+        {showFavoriteInput && (
+          <div className="px-2 py-2 flex items-center gap-2">
+            <input
+              type="text"
+              value={favoriteValue}
+              onChange={(e) => setFavoriteValue(e.target.value)}
+              placeholder="Enter ticket name"
+              className="flex-1 border border-gray-300 rounded-md p-2"
+            />
+            <button
+              onClick={handleSaveFavorite}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md"
+            >
+              Save
+            </button>
+          </div>
+        )}
         <div className="flex justify-between items-center px-2 py-3">
           <div className="flex items-center gap-3">
             <LuWallet className="text-xl" />

@@ -30,7 +30,7 @@ const BottomNav = () => {
       id: "sell",
       label: "Sell",
       icon: <FaMoneyBillWave size={22} />,
-      path: "/sell",
+      path: "/ticketconfirm",
     },
     {
       id: "account",

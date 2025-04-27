@@ -204,7 +204,7 @@ const Navbar = () => {
         {/* Bottom Row: Location + Date + Search */}
         <div className="flex items-center  gap-4 mt-3 w-full ">
           {/* Location Selector */}
-          <div className="flex items-center gap-2 cursor-pointer text-white border-r border-gray-500">
+          <div className="flex items-center gap- cursor-pointer text-white border-r border-gray-500">
             <TiLocationArrowOutline className="text-customBlue text-xl" />
 
             <input
