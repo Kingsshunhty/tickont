@@ -3,7 +3,7 @@ import Home from "../Pages/Homepage";
 import Login from "../Pages/Login";
 import { AuthProvider } from "../Context/AuthContext";
 import ForYou from "../Pages/ForYou";
-import TicketmasterClone from "../Pages/ticketmasterpage";
+// import TicketmasterClone from "../Pages/ticketmasterpage";
 import ProtectedRoute from "./ProtectedRoutes";
 import SplashScreen from "../Components/SplashScreen";
 import TicketConfirm from "../Pages/Ticketconfirm";
@@ -14,7 +14,7 @@ const AppRoutes = () => {
     <AuthProvider>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/ticketmaster" element={<TicketmasterClone />} />
+        {/* <Route path="/ticketmaster" element={<TicketmasterClone />} /> */}
        
         <Route path="/splash" element={<SplashScreen />} />
         <Route element={<ProtectedRoute />}>
