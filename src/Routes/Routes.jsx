@@ -25,10 +25,6 @@ const AppRoutes = () => {
           <Route path="/foryou" element={<ForYou />} />
         </Route>
 
-        {/* <Route path="/profile" element={<Profile />} />
-      <Route path="/events" element={<Events />} />
-      <Route path="/sell" element={<Sell />} />
-      <Route path="/account" element={<Account />} /> */}
       </Routes>
     </AuthProvider>
   );
