@@ -145,6 +145,7 @@ export default function TicketmasterClone() {
             <div className="h-6 overflow-hidden bg-gradient-to-r from-purple-600 via-blue-500 to-teal-400 relative">
               <div className="absolute whitespace-nowrap animate-marquee text-white font-semibold text-sm">
                 Ticketmaster • Ticketmaster • Ticketmaster • Ticketmaster •
+                Ticketmaster • Ticketmaster • Ticketmaster • Ticketmaster • Ticketmaster •
                 Ticketmaster •
               </div>
             </div>
