@@ -48,8 +48,8 @@ const AddTicket = () => {
   const [error, setError] = useState("");
   const [admissionType, setAdmissionType] = useState("");
   const [section, setSection] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
+  const [lat, setLat] = useState("");
+  const [lng, setLng] = useState("");
 
   const [forSale, setForSale] = useState(false); // new
 
@@ -126,8 +126,8 @@ const AddTicket = () => {
         row, // Save row to Firestore
         seatNumber, // Save seat number to Firestore
         forSale,
-        latitude: parseFloat(latitude), // ← new
-        longitude: parseFloat(longitude), // ← new
+        lat: parseFloat(lat),
+        lng: parseFloat(lng),
         coverImage: imageUrl,
         admissionType, // ✅ New field
         section, // ✅ New field
@@ -142,6 +142,9 @@ const AddTicket = () => {
       setTicketHeader("");
       setTimeValue("");
       setLocation("");
+      setLat("");
+      setLng("");
+
       setTicketQuantity("");
       setRow("");
       setSeatNumber("");
@@ -353,12 +356,14 @@ const AddTicket = () => {
         </div>
         {/* Latitude */}
         <div className="mb-4">
-          <label className="block font-medium mb-1">Latitude: this is for the map</label>
+          <label className="block font-medium mb-1">
+            Latitude: this is for the map
+          </label>
           <input
             type="number"
             step="any"
-            value={latitude}
-            onChange={(e) => setLatitude(e.target.value)}
+            value={lat}
+            onChange={(e) => setLat(e.target.value)}
             placeholder="e.g. 6.5244"
             className="
               border 
@@ -375,12 +380,14 @@ const AddTicket = () => {
 
         {/* Longitude */}
         <div className="mb-4">
-          <label className="block font-medium mb-1">Longitude: this is for the map</label>
+          <label className="block font-medium mb-1">
+            Longitude: this is for the map
+          </label>
           <input
             type="number"
             step="any"
-            value={longitude}
-            onChange={(e) => setLongitude(e.target.value)}
+            value={lng}
+            onChange={(e) => setLng(e.target.value)}
             placeholder="e.g. 3.3792"
             className="
               border 

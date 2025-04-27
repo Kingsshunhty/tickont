@@ -1,23 +1,53 @@
 import React, { useState } from "react";
 import CountryFlag from "react-country-flag";
 import { GoChevronRight, GoChevronDown } from "react-icons/go";
+import { useAuth } from "../Context/AuthContext";
+import { useEffect } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase.config";
+
 import { FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
 import { TiLocationArrowOutline } from "react-icons/ti";
 import { LuCalendarFold } from "react-icons/lu";
 import { GrSearch } from "react-icons/gr";
 const Navbar = () => {
-  const [country, setCountry] = useState("US"); // Default country
+  const [selectedCountry, setSelectedCountry] = useState({
+    code: "US",
+    name: "United States",
+  });
+
   const [city, setCity] = useState("Los Angeles, CA");
   const [dates, setDates] = useState("All Dates");
   const [searchTerm, setSearchTerm] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedCity, setSelectedCity] = useState("Los Angeles");
+  const [selectedCity, setSelectedCity] = useState(
+    () => localStorage.getItem("selectedCity") || "Los Angeles"
+  );
+
   const [selectedDate, setSelectedDate] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   // Truncate city name if longer than 20 chars
   const truncatedCity =
     selectedCity.length > 20 ? selectedCity.slice(0, 17) + "..." : selectedCity;
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!user) return;
+    const fetchCountry = async () => {
+      try {
+        const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+        if (snap.exists() && snap.data().country) {
+          // assume .country is stored as { code, name }
+          setSelectedCountry(snap.data().country);
+        }
+      } catch (err) {
+        console.error("Error loading country:", err);
+      }
+    };
+    fetchCountry();
+  }, [user]);
 
   // List of countries (ISO code + name)
   const countries = [
@@ -98,8 +128,8 @@ const Navbar = () => {
   ];
 
   // Handle country selection
-  const handleSelectCountry = (code) => {
-    setCountry(code);
+  const handleSelectCountry = (countryObj) => {
+    setSelectedCountry(countryObj);
     setShowDropdown(false);
   };
 
@@ -109,6 +139,10 @@ const Navbar = () => {
 
   const handleSearch = () => {
     alert(`Searching for: ${searchTerm}`);
+  };
+  const handleSelectCity = (city) => {
+    setSelectedCity(city);
+    localStorage.setItem("selectedCity", city);
   };
 
   return (
@@ -129,7 +163,7 @@ const Navbar = () => {
             >
               <div className="w-6 h-6 flex items-center p-0.5 justify-center rounded-full overflow-hidden border border-white">
                 <CountryFlag
-                  countryCode={country}
+                  countryCode={selectedCountry.code}
                   svg
                   style={{
                     width: "100%",
@@ -170,19 +204,21 @@ const Navbar = () => {
         {/* Bottom Row: Location + Date + Search */}
         <div className="flex items-center  gap-4 mt-3 w-full ">
           {/* Location Selector */}
-          <div className="flex items-center gap-2 cursor-pointer text-white border-r border-gray-500 ">
+          <div className="flex items-center gap-2 cursor-pointer text-white border-r border-gray-500">
             <TiLocationArrowOutline className="text-customBlue text-xl" />
-            <select
-              className="bg-transparent text-white font-poppin focus:outline-none appearance-none "
+
+            <input
+              list="city-list"
               value={selectedCity}
-              onChange={(e) => setSelectedCity(e.target.value)}
-            >
-              {cities.map((city) => (
-                <option key={city} value={city} className="text-black">
-                  {city}, .....
-                </option>
+              onChange={(e) => handleSelectCity(e.target.value)}
+              className="bg-transparent text-white font-poppin focus:outline-none"
+              placeholder="Type or pick a city"
+            />
+            <datalist id="city-list">
+              {cities.map((c) => (
+                <option key={c} value={c} />
               ))}
-            </select>
+            </datalist>
           </div>
 
           {/* Date Selector */}

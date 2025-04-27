@@ -1,6 +1,6 @@
 {
-    "name": "TicketMaster",
-    "short_name": "TicketMaster",
+    "name": "Ticketmaster",
+    "short_name": "Ticketmaster",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
